@@ -72,7 +72,7 @@
  * @moduleGraph
  * @since 9
  */
-module jdk.compiler {
+module standalone.jdk.compiler {
     requires transitive java.compiler;
 
     exports com.sun.source.doctree;
