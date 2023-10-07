@@ -65,6 +65,7 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
+import com.kohlschutter.jdk.standaloneutil.misc.VM;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.TaskEvent;
 import com.sun.source.util.TaskListener;
@@ -72,8 +73,6 @@ import com.sun.tools.javac.api.JavacTool;
 import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.resources.LauncherProperties.Errors;
 import com.sun.tools.javac.util.JCDiagnostic.Error;
-
-import jdk.internal.misc.VM;
 
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 

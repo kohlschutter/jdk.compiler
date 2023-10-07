@@ -48,8 +48,7 @@ import java.util.stream.StreamSupport;
 
 import javax.lang.model.SourceVersion;
 
-import jdk.internal.misc.VM;
-
+import com.kohlschutter.jdk.standaloneutil.misc.VM;
 import com.sun.tools.doclint.DocLint;
 import com.sun.tools.javac.code.Lint;
 import com.sun.tools.javac.code.Lint.LintCategory;

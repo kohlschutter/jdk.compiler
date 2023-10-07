@@ -123,6 +123,8 @@ module jdk.compiler {
     uses com.sun.source.util.Plugin;
     uses com.sun.tools.javac.platform.PlatformProvider;
 
+    requires com.kohlschutter.jdk.standaloneutil;
+
     provides java.util.spi.ToolProvider with
         com.sun.tools.javac.main.JavacToolProvider;
 

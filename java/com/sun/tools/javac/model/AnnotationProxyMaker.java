@@ -32,12 +32,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import sun.reflect.annotation.*;
 
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 
+import com.kohlschutter.jdk.standaloneutil.annotation.AnnotationParser;
+import com.kohlschutter.jdk.standaloneutil.annotation.AnnotationType;
+import com.kohlschutter.jdk.standaloneutil.annotation.EnumConstantNotPresentExceptionProxy;
+import com.kohlschutter.jdk.standaloneutil.annotation.ExceptionProxy;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Symbol.*;
 import com.sun.tools.javac.code.Type.ArrayType;

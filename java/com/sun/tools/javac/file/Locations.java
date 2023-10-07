@@ -77,8 +77,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardJavaFileManager.PathFactory;
 import javax.tools.StandardLocation;
 
-import jdk.internal.jmod.JmodFile;
-
+import com.kohlschutter.jdk.standaloneutil.jmod.JmodFile;
 import com.sun.tools.javac.code.Lint;
 import com.sun.tools.javac.code.Lint.LintCategory;
 import com.sun.tools.javac.main.Option;
