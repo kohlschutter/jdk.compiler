@@ -225,43 +225,19 @@ module jdk.compiler {
     exports com.sun.source.util;
     exports com.sun.tools.javac;
 
-    exports com.sun.tools.doclint to
-        jdk.javadoc;
-    exports com.sun.tools.javac.api to
-        jdk.javadoc,
-        jdk.jshell;
-    exports com.sun.tools.javac.resources to
-        jdk.jshell;
-    exports com.sun.tools.javac.code to
-        jdk.javadoc,
-        jdk.jshell;
-    exports com.sun.tools.javac.comp to
-        jdk.javadoc,
-        jdk.jshell;
-    exports com.sun.tools.javac.file to
-        jdk.jdeps,
-        jdk.javadoc;
-    exports com.sun.tools.javac.jvm to
-        jdk.javadoc;
-    exports com.sun.tools.javac.main to
-        jdk.javadoc,
-        jdk.jshell;
-    exports com.sun.tools.javac.model to
-        jdk.javadoc;
-    exports com.sun.tools.javac.parser to
-        jdk.jshell;
-    exports com.sun.tools.javac.platform to
-        jdk.jdeps,
-        jdk.javadoc;
-    exports com.sun.tools.javac.tree to
-        jdk.javadoc,
-        jdk.jshell;
-    exports com.sun.tools.javac.util to
-        jdk.jdeps,
-        jdk.javadoc,
-        jdk.jshell;
-    exports jdk.internal.shellsupport.doc to
-        jdk.jshell;
+    exports com.sun.tools.doclint;
+    exports com.sun.tools.javac.api;
+    exports com.sun.tools.javac.resources;
+    exports com.sun.tools.javac.code;
+    exports com.sun.tools.javac.comp;
+    exports com.sun.tools.javac.file;
+    exports com.sun.tools.javac.jvm;
+    exports com.sun.tools.javac.main;
+    exports com.sun.tools.javac.model;
+    exports com.sun.tools.javac.parser;
+    exports com.sun.tools.javac.platform;
+    exports com.sun.tools.javac.tree;
+    exports com.sun.tools.javac.util;
 
     uses javax.annotation.processing.Processor;
     uses com.sun.source.util.Plugin;
