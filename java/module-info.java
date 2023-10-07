@@ -215,7 +215,7 @@ import javax.tools.StandardLocation;
  * @moduleGraph
  * @since 9
  */
-module jdk.compiler {
+module standalone.jdk.compiler {
     requires transitive java.compiler;
     requires jdk.internal.opt;
     requires jdk.zipfs;
