@@ -47,6 +47,8 @@ import java.util.Set;
 
 import javax.tools.FileObject;
 
+import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
+
 import standalone.com.sun.tools.javac.file.RelativePath.RelativeDirectory;
 import standalone.com.sun.tools.javac.util.Context;
 
@@ -81,7 +83,7 @@ public class JRTIndex {
 
     public static boolean isAvailable() {
         try {
-            FileSystems.getFileSystem(URI.create("jrt:/"));
+            JavaHomeLocator.getCompilerJrtFS();
             return true;
         } catch (ProviderNotFoundException | FileSystemNotFoundException e) {
             return false;
@@ -177,7 +179,7 @@ public class JRTIndex {
      * Create and initialize the index.
      */
     private JRTIndex() throws IOException {
-        jrtfs = FileSystems.getFileSystem(URI.create("jrt:/"));
+        jrtfs = JavaHomeLocator.getCompilerJrtFS();
         entries = new HashMap<>();
     }
 
