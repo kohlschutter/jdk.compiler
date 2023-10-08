@@ -40,7 +40,8 @@ import java.util.Stack;
 import javax.lang.model.element.Name;
 import javax.tools.JavaFileObject.Kind;
 import javax.tools.SimpleJavaFileObject;
-import javax.tools.ToolProvider;
+
+import com.kohlschutter.jdk.standaloneutil.ToolProvider;
 
 import standalone.com.sun.source.doctree.AttributeTree;
 import standalone.com.sun.source.doctree.DocCommentTree;

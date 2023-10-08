@@ -38,7 +38,8 @@ import java.util.Set;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+
+import com.kohlschutter.jdk.standaloneutil.ToolProvider;
 
 import standalone.com.sun.tools.javac.api.JavacTaskImpl;
 import standalone.com.sun.tools.javac.api.JavacTool;

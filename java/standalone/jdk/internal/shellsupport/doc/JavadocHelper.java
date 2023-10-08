@@ -65,7 +65,8 @@ import javax.tools.JavaFileObject.Kind;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+
+import com.kohlschutter.jdk.standaloneutil.ToolProvider;
 
 import standalone.com.sun.source.doctree.DocCommentTree;
 import standalone.com.sun.source.doctree.DocTree;
