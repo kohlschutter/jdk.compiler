@@ -75,6 +75,8 @@
 module standalone.jdk.compiler {
     requires transitive java.compiler;
 
+    requires com.kohlschutter.jdk.home;
+
     exports standalone.com.sun.source.doctree;
     exports standalone.com.sun.source.tree;
     exports standalone.com.sun.source.util;
