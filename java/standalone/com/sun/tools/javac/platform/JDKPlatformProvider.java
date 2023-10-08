@@ -60,6 +60,8 @@ import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 
+import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
+
 import standalone.com.sun.source.util.Plugin;
 import standalone.com.sun.tools.javac.file.CacheFSInfo;
 import standalone.com.sun.tools.javac.file.JavacFileManager;
@@ -267,8 +269,7 @@ public class JDKPlatformProvider implements PlatformProvider {
                                 if (Files.isRegularFile(systemModules)) {
                                     fm.handleOption("--system", Arrays.asList("none").iterator());
 
-                                    Path jrtModules =
-                                            FileSystems.getFileSystem(URI.create("jrt:/"))
+                                    Path jrtModules = JavaHomeLocator.getCompilerJrtFS()
                                                        .getPath("modules");
                                     try (Stream<String> lines =
                                             Files.lines(systemModules, utf8)) {
@@ -376,12 +377,7 @@ public class JDKPlatformProvider implements PlatformProvider {
     }
 
     static Path findCtSym() {
-        String javaHome = System.getProperty("java.home");
-        Path file = Paths.get(javaHome);
-        // file == ${jdk.home}
-        for (String name : symbolFileLocation)
-            file = file.resolve(name);
-        return file;
+        return JavaHomeLocator.getCtSymPath();
     }
 
 }

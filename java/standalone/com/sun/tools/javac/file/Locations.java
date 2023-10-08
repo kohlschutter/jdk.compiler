@@ -77,6 +77,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardJavaFileManager.PathFactory;
 import javax.tools.StandardLocation;
 
+import com.kohlschutter.jdk.standaloneutil.JavaHomeLocator;
 import com.kohlschutter.jdk.standaloneutil.jmod.JmodFile;
 import standalone.com.sun.tools.javac.code.Lint;
 import standalone.com.sun.tools.javac.code.Lint.LintCategory;
@@ -135,7 +136,7 @@ public class Locations {
 
     private PathFactory pathFactory = Paths::get;
 
-    static final Path javaHome = FileSystems.getDefault().getPath(System.getProperty("java.home"));
+    static final Path javaHome = JavaHomeLocator.getCompilerJavaHome();
     static final Path thisSystemModules = javaHome.resolve("lib").resolve("modules");
 
     Map<Path, FileSystem> fileSystems = new LinkedHashMap<>();
@@ -1901,7 +1902,7 @@ public class Locations {
                     FileSystem jrtfs;
 
                     if (isCurrentPlatform(systemJavaHome)) {
-                        jrtfs = FileSystems.getFileSystem(jrtURI);
+                        jrtfs = JavaHomeLocator.getCompilerJrtFS();
                     } else {
                         try {
                             Map<String, String> attrMap =
