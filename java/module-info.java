@@ -234,6 +234,7 @@ module standalone.jdk.compiler {
     exports standalone.com.sun.tools.javac.jvm;
     exports standalone.com.sun.tools.javac.main;
     exports standalone.com.sun.tools.javac.model;
+    opens standalone.com.sun.tools.javac.model;
     exports standalone.com.sun.tools.javac.parser;
     exports standalone.com.sun.tools.javac.platform;
     exports standalone.com.sun.tools.javac.tree;
