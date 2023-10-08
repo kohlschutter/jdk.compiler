@@ -518,7 +518,7 @@ public class JavacFileManager extends BaseFileManager implements StandardJavaFil
                     throw new IOException("ZipException opening \"" + archivePath.getFileName() + "\": " + ze.getMessage(), ze);
                 }
             } else {
-                this.fileSystem = FileSystems.newFileSystem(archivePath, null);
+                this.fileSystem = FileSystems.newFileSystem(archivePath, (ClassLoader)null);
             }
             packages = new HashMap<>();
             for (Path root : fileSystem.getRootDirectories()) {
