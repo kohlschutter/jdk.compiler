@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.AnnotatedConstruct;
 import standalone.javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.element.ElementShim;
+
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
@@ -553,17 +555,17 @@ public class JavacElements implements Elements {
             for (Symbol e : type.asElement().members().getSymbols(NON_RECURSIVE)) {
                 for (Symbol overrider : scope.getSymbolsByName(e.getSimpleName())) {
                     if (overrider.kind == e.kind && (overrider.flags() & Flags.SYNTHETIC) == 0) {
-                        if (overrider.getKind() == ElementKind.METHOD &&
+                        if (overrider.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.METHOD &&
                                 overrides((ExecutableElement)overrider, (ExecutableElement)e, (TypeElement)type.asElement())) {
                             continue members;
                         }
                     }
                 }
                 boolean derived = e.getEnclosingElement() != scope.owner;
-                ElementKind kind = e.getKind();
-                boolean initializer = kind == ElementKind.CONSTRUCTOR
-                    || kind == ElementKind.INSTANCE_INIT
-                    || kind == ElementKind.STATIC_INIT;
+                standalone.javax.lang.model.element.ElementKind kind = e.getKindStandalone();
+                boolean initializer = kind == standalone.javax.lang.model.element.ElementKind.CONSTRUCTOR
+                    || kind == standalone.javax.lang.model.element.ElementKind.INSTANCE_INIT
+                    || kind == standalone.javax.lang.model.element.ElementKind.STATIC_INIT;
                 if (!derived || (!initializer && e.isInheritedIn(scope.owner, types)))
                     scope.enter(e);
             }
@@ -586,7 +588,7 @@ public class JavacElements implements Elements {
     public List<Attribute.Compound> getAllAnnotationMirrors(Element e) {
         Symbol sym = cast(Symbol.class, e);
         List<Attribute.Compound> annos = sym.getAnnotationMirrors();
-        while (sym.getKind() == ElementKind.CLASS) {
+        while (sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.CLASS) {
             Type sup = ((ClassSymbol) sym).getSuperclass();
             if (!sup.hasTag(CLASS) || sup.isErroneous() ||
                     sup.tsym == syms.objectType.tsym) {
@@ -711,7 +713,7 @@ public class JavacElements implements Elements {
 
     @Override @DefinedBy(Api.LANGUAGE_MODEL)
     public boolean isFunctionalInterface(TypeElement element) {
-        if (element.getKind() != ElementKind.INTERFACE)
+        if (ElementShim.getKindStandalone(element) != standalone.javax.lang.model.element.ElementKind.INTERFACE)
             return false;
         else {
             TypeSymbol tsym = cast(TypeSymbol.class, element);
@@ -738,25 +740,25 @@ public class JavacElements implements Elements {
     /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
     public JavaFileObject getFileObjectOf(Element e) {
         Symbol sym = (Symbol) e;
-        return switch(sym.kind) {
-            case PCK -> {
+        switch(sym.kind) {
+            case PCK: {
                 PackageSymbol psym = (PackageSymbol) sym;
                 if (psym.package_info == null) {
-                    yield null;
+                    return null;
                 }
-                yield psym.package_info.classfile;
+                return psym.package_info.classfile;
             }
 
-            case MDL -> {
+            case MDL: {
                 ModuleSymbol msym = (ModuleSymbol) sym;
                 if (msym.module_info == null) {
-                    yield null;
+                    return null;
                 }
-                yield msym.module_info.classfile;
+                return msym.module_info.classfile;
             }
-            case TYP -> ((ClassSymbol) sym).classfile;
-            default -> sym.enclClass().classfile;
-        };
+            case TYP: return ((ClassSymbol) sym).classfile;
+            default: return sym.enclClass().classfile;
+        }
     }
 
     /**

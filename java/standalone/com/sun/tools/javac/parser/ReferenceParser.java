@@ -129,11 +129,11 @@ public class ReferenceParser {
             int lparen = sig.indexOf("(", Math.max(slash, hash) + 1);
             int afterLparen = lparen + 1;
 
-            moduleName = switch (slash) {
-                case -1 -> null;
-                case 0 -> throw new ParseException(0, "dc.ref.syntax.error");
-                default -> parseModule(sig, 0, slash, dh);
-            };
+            switch (slash) {
+                case -1: moduleName =  null; break;
+                case 0: throw new ParseException(0, "dc.ref.syntax.error");
+                default: moduleName =  parseModule(sig, 0, slash, dh);
+            }
 
             if (slash > 0 && sig.length() == afterSlash) {
                 qualExpr = null;

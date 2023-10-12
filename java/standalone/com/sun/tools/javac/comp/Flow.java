@@ -808,22 +808,22 @@ public class Flow {
         }
 
         private List<Type> components(Type seltype) {
-            return switch (seltype.getTag()) {
-                case CLASS -> {
+            switch (seltype.getTag()) {
+                case CLASS: {
                     if (seltype.isCompound()) {
                         if (seltype.isIntersection()) {
-                            yield ((Type.IntersectionClassType) seltype).getComponents()
+                            return ((Type.IntersectionClassType) seltype).getComponents()
                                                                         .stream()
                                                                         .flatMap(t -> components(t).stream())
                                                                         .collect(List.collector());
                         }
-                        yield List.nil();
+                        return List.nil();
                     }
-                    yield List.of(types.erasure(seltype));
+                    return List.of(types.erasure(seltype));
                 }
-                case TYPEVAR -> components(((TypeVar) seltype).getUpperBound());
-                default -> List.of(types.erasure(seltype));
-            };
+                case TYPEVAR: return components(((TypeVar) seltype).getUpperBound());
+                default: return List.of(types.erasure(seltype));
+            }
         }
 
         /* In a set of patterns, search for a sub-set of binding patterns that
@@ -3241,30 +3241,35 @@ public class Flow {
                 Symbol sym = TreeInfo.symbol(tree);
                 if (currentTree != null) {
                     switch (currentTree.getTag()) {
-                        case CLASSDEF, LAMBDA -> {
+                        case CLASSDEF:
+                        case LAMBDA: {
                             if (sym.kind == VAR &&
                                 sym.owner.kind == MTH &&
                                 ((VarSymbol)sym).pos < currentTree.getStartPosition()) {
                                 reportEffectivelyFinalError(tree, sym);
                             }
-                        }
-                        case CASE -> {
+                        } break;
+                        case CASE: {
                             if (!declaredInsideGuard.includes(sym)) {
                                 log.error(tree.pos(), Errors.CannotAssignNotDeclaredGuard(sym));
                             }
-                        }
+                        } break;
                     }
                 }
             }
         }
+        
+        private Fragment switchTag(Tag tag) {
+          switch(tag) {
+            case LAMBDA: return Fragments.Lambda;
+            case CASE: return Fragments.Guard;
+            case CLASSDEF: return Fragments.InnerCls;
+            default: throw new AssertionError("Unexpected tree kind: " + currentTree.getTag());
+          }
+        }
 
         void reportEffectivelyFinalError(DiagnosticPosition pos, Symbol sym) {
-            Fragment subKey = switch (currentTree.getTag()) {
-                case LAMBDA -> Fragments.Lambda;
-                case CASE -> Fragments.Guard;
-                case CLASSDEF -> Fragments.InnerCls;
-                default -> throw new AssertionError("Unexpected tree kind: " + currentTree.getTag());
-            };
+            Fragment subKey = switchTag(currentTree.getTag());
             log.error(pos, Errors.CantRefNonEffectivelyFinalVar(sym, diags.fragment(subKey)));
         }
 

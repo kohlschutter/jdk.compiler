@@ -34,6 +34,7 @@ import standalone.com.sun.tools.javac.tree.TreeInfo.PosKind;
 import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
 import standalone.com.sun.tools.javac.util.List;
+import standalone.javax.lang.model.element.ElementKind;
 import standalone.com.sun.tools.javac.code.*;
 import standalone.com.sun.tools.javac.code.Attribute.TypeCompound;
 import standalone.com.sun.tools.javac.code.Symbol.VarSymbol;
@@ -1967,8 +1968,8 @@ public class Gen extends JCTree.Visitor {
 
     private void setTypeAnnotationPositions(int treePos) {
         MethodSymbol meth = code.meth;
-        boolean initOrClinit = code.meth.getKind() == javax.lang.model.element.ElementKind.CONSTRUCTOR
-                || code.meth.getKind() == javax.lang.model.element.ElementKind.STATIC_INIT;
+        boolean initOrClinit = code.meth.getKindStandalone() == ElementKind.CONSTRUCTOR
+                || code.meth.getKindStandalone() == ElementKind.STATIC_INIT;
 
         for (Attribute.TypeCompound ta : meth.getRawTypeAttributes()) {
             if (ta.hasUnknownPosition())
@@ -1991,7 +1992,7 @@ public class Gen extends JCTree.Visitor {
 
         ClassSymbol clazz = meth.enclClass();
         for (Symbol s : new standalone.com.sun.tools.javac.model.FilteredMemberList(clazz.members())) {
-            if (!s.getKind().isField())
+            if (!s.getKindStandalone().isField())
                 continue;
 
             for (Attribute.TypeCompound ta : s.getRawTypeAttributes()) {

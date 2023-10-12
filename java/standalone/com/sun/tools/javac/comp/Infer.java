@@ -678,7 +678,7 @@ public class Infer {
             Type current = todo.head;
             todo = todo.tail;
             switch (current.getTag()) {
-                case CLASS -> {
+                case CLASS: {
                     if (current.isCompound()) {
                         todo = todo.prependList(types.directSupertypes(current));
                     } else {
@@ -692,11 +692,11 @@ public class Infer {
                         }
                         expressionTypes = expressionTypes.prepend(captured);
                     }
-                }
-                case TYPEVAR -> {
+                } break;
+                case TYPEVAR: {
                     todo = todo.prepend(types.skipTypeVars(current, false));
-                }
-                default -> expressionTypes = expressionTypes.prepend(current);
+                } break;
+                default: expressionTypes = expressionTypes.prepend(current);
             }
         }
         //add synthetic captured ivars

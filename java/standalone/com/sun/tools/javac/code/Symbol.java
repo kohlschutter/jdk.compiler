@@ -44,7 +44,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.ModuleElement;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
-import javax.lang.model.element.RecordComponentElement;
+import standalone.javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -386,7 +386,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
     }
 
     public boolean isDeprecatableViaAnnotation() {
-        switch (getKind()) {
+        switch (getKindStandalone()) {
             case LOCAL_VARIABLE:
             case PACKAGE:
             case PARAMETER:
@@ -714,6 +714,13 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         return ElementKind.OTHER;       // most unkind
     }
 
+    @Override
+    @DefinedBy(Api.LANGUAGE_MODEL)
+    public standalone.javax.lang.model.element.ElementKind getKindStandalone() {
+        return standalone.javax.lang.model.element.ElementKind.valueOf(getKind().name());
+                                        // kinder egg
+    }
+
     /**
      * @deprecated
      * @see #getModifiersStandalone()
@@ -756,7 +763,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
     public List<TypeVariableSymbol> getTypeParameters() {
         ListBuffer<TypeVariableSymbol> l = new ListBuffer<>();
         for (Type t : type.getTypeArguments()) {
-            Assert.check(t.tsym.getKind() == ElementKind.TYPE_PARAMETER);
+            Assert.check(t.tsym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.TYPE_PARAMETER);
             l.append((TypeVariableSymbol)t.tsym);
         }
         return l.toList();
@@ -1496,7 +1503,12 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         }
 
 
+        /**
+         * @deprecated
+         * @see #getKindStandalone()
+         */
         @DefinedBy(Api.LANGUAGE_MODEL)
+        @Deprecated
         public ElementKind getKind() {
             apiComplete();
             long flags = flags();
@@ -1507,11 +1519,26 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             else if ((flags & ENUM) != 0)
                 return ElementKind.ENUM;
             else if ((flags & RECORD) != 0)
-                return ElementKind.RECORD;
+                return ElementKind.valueOf("RECORD");
             else
                 return ElementKind.CLASS;
         }
 
+        //@DefinedBy(Api.LANGUAGE_MODEL)
+        public standalone.javax.lang.model.element.ElementKind getKindStandalone() {
+            apiComplete();
+            long flags = flags();
+            if ((flags & ANNOTATION) != 0)
+                return standalone.javax.lang.model.element.ElementKind.ANNOTATION_TYPE;
+            else if ((flags & INTERFACE) != 0)
+                return standalone.javax.lang.model.element.ElementKind.INTERFACE;
+            else if ((flags & ENUM) != 0)
+                return standalone.javax.lang.model.element.ElementKind.ENUM;
+            else if ((flags & RECORD) != 0)
+                return standalone.javax.lang.model.element.ElementKind.RECORD;
+            else
+                return standalone.javax.lang.model.element.ElementKind.CLASS;
+        }
         /**
          * @deprecated
          * @see #getModifiersStandalone()
@@ -1568,7 +1595,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             return rc;
         }
 
-        @Override @DefinedBy(Api.LANGUAGE_MODEL)
+        /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
         public List<? extends RecordComponent> getRecordComponents() {
             return recordComponents;
         }
@@ -1744,6 +1771,11 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             return new VarSymbol(flags_field, name, types.memberType(site, this), owner);
         }
 
+        /**
+         * @deprecated
+         * @see #getKindStandalone()
+         */
+        @Deprecated
         @DefinedBy(Api.LANGUAGE_MODEL)
         public ElementKind getKind() {
             long flags = flags();
@@ -1759,13 +1791,34 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             } else if (isResourceVariable()) {
                 return ElementKind.RESOURCE_VARIABLE;
             } else if ((flags & MATCH_BINDING) != 0) {
-                ElementKind kind = ElementKind.BINDING_VARIABLE;
+                ElementKind kind = ElementKind.valueOf("BINDING_VARIABLE");
                 return kind;
             } else {
                 return ElementKind.LOCAL_VARIABLE;
             }
         }
 
+        @DefinedBy(Api.LANGUAGE_MODEL)
+        public standalone.javax.lang.model.element.ElementKind getKindStandalone() {
+            long flags = flags();
+            if ((flags & PARAMETER) != 0) {
+                if (isExceptionParameter())
+                    return standalone.javax.lang.model.element.ElementKind.EXCEPTION_PARAMETER;
+                else
+                    return standalone.javax.lang.model.element.ElementKind.PARAMETER;
+            } else if ((flags & ENUM) != 0) {
+                return standalone.javax.lang.model.element.ElementKind.ENUM_CONSTANT;
+            } else if (owner.kind == TYP || owner.kind == ERR) {
+                return standalone.javax.lang.model.element.ElementKind.FIELD;
+            } else if (isResourceVariable()) {
+                return standalone.javax.lang.model.element.ElementKind.RESOURCE_VARIABLE;
+            } else if ((flags & MATCH_BINDING) != 0) {
+                standalone.javax.lang.model.element.ElementKind kind = standalone.javax.lang.model.element.ElementKind.BINDING_VARIABLE;
+                return kind;
+            } else {
+                return standalone.javax.lang.model.element.ElementKind.LOCAL_VARIABLE;
+            }
+        }
         @DefinedBy(Api.LANGUAGE_MODEL)
         public <R, P> R accept(ElementVisitor<R, P> v, P p) {
             return v.visitVariable(this, p);
@@ -1832,7 +1885,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         }
     }
 
-    public static class RecordComponent extends VarSymbol implements RecordComponentElement {
+    public static class RecordComponent extends VarSymbol implements standalone.javax.lang.model.element.RecordComponentElement {
         public MethodSymbol accessor;
         public JCTree.JCMethodDecl accessorMeth;
 
@@ -1881,8 +1934,13 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
 
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         public ElementKind getKind() {
-            return ElementKind.RECORD_COMPONENT;
+            return ElementKind.valueOf("RECORD_COMPONENT");
         }
+        
+        @Override
+        public standalone.javax.lang.model.element.ElementKind getKindStandalone() {
+          return standalone.javax.lang.model.element.ElementKind.RECORD_COMPONENT;
+      }
 
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         public ExecutableElement getAccessor() {
@@ -1891,7 +1949,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
 
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         public <R, P> R accept(ElementVisitor<R, P> v, P p) {
-            return v.visitRecordComponent(this, p);
+            return standalone.javax.lang.model.element.ElementVisitor.visitRecordComponent(v, this, p);
         }
     }
 
@@ -2280,8 +2338,8 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         }
 
         public boolean isStaticOrInstanceInit() {
-            return getKind() == ElementKind.STATIC_INIT ||
-                    getKind() == ElementKind.INSTANCE_INIT;
+            return getKindStandalone() == standalone.javax.lang.model.element.ElementKind.STATIC_INIT ||
+                getKindStandalone() == standalone.javax.lang.model.element.ElementKind.INSTANCE_INIT;
         }
 
         @DefinedBy(Api.LANGUAGE_MODEL)

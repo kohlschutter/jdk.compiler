@@ -360,7 +360,7 @@ public class LambdaToMethod extends TreeTranslator {
                         init ? owner::setInitTypeAttributes : owner::setClassInitTypeAttributes,
                         sym::appendUniqueTypeAttributes);
             }
-            if (localContext.self != null && localContext.self.getKind() == ElementKind.FIELD) {
+            if (localContext.self != null && localContext.self.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.FIELD) {
                 owner = localContext.self;
                 apportionTypeAnnotations(tree,
                         owner::getRawTypeAttributes,

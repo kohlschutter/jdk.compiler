@@ -559,12 +559,14 @@ public class DocTreeMaker implements DocTreeFactory {
                     boolean isFirst = !iter.hasPrevious();
                     DCTree dt = iter.next();
                     switch (dt.getKind()) {
-                        case RETURN, SUMMARY -> {
+                        case RETURN:
+                        case SUMMARY: {
                             fs.add(dt);
                             foundFirstSentence = true;
                         }
+                        break;
 
-                        case TEXT -> {
+                        case TEXT: {
                             var dtPos = dt.pos;
                             var s = ((DCText) dt).getBody();
                             var peekedNext = iter.hasNext()
@@ -595,8 +597,9 @@ public class DocTreeMaker implements DocTreeFactory {
                                 fs.add(dt);
                             }
                         }
+                        break;
 
-                        default -> {
+                        default: {
                             // This ignores certain block tags if they appear first in the list,
                             // allowing the content of that tag to provide the first sentence.
                             // It would be better if other block tags always terminated the

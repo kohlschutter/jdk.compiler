@@ -25,7 +25,6 @@
 
 package standalone.com.sun.tools.javac.parser;
 
-import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +62,7 @@ import static standalone.com.sun.tools.javac.util.LayoutCharacters.EOI;
  */
 public class DocCommentParser {
     static class ParseException extends Exception {
-        @Serial
+        //@Serial
         private static final long serialVersionUID = 0;
         final int pos;
 
@@ -145,7 +144,10 @@ public class DocCommentParser {
     void nextChar() {
         ch = buf[bp < buflen ? ++bp : buflen];
         switch (ch) {
-            case '\f', '\n', '\r' -> newline = true;
+            case '\f':
+            case '\n':
+            case '\r':
+              newline = true;
         }
     }
 
@@ -183,7 +185,7 @@ public class DocCommentParser {
                     newline = false;
                     if (isFileContent) {
                         switch (phase) {
-                            case PREAMBLE -> {
+                            case PREAMBLE: {
                                 if (isEndPreamble()) {
                                     trees.add(html());
                                     if (textStart == -1) {
@@ -194,15 +196,15 @@ public class DocCommentParser {
                                     newline = true;
                                     break loop;
                                 }
-                            }
-                            case BODY -> {
+                            } break;
+                            case BODY: {
                                 if (isEndBody()) {
                                     addPendingText(trees, lastNonWhite);
                                     break loop;
                                 }
-                            }
+                            } break;
 
-                            default -> { }
+                            default: { }
                         }
                     }
                     addPendingText(trees, bp - 1);
@@ -392,40 +394,44 @@ public class DocCommentParser {
      */
     private DCText inlineText(WhitespaceRetentionPolicy whitespacePolicy) throws ParseException {
         switch (whitespacePolicy) {
-            case REMOVE_ALL -> {
+            case REMOVE_ALL: {
                 skipWhitespace();
-            }
+            } break;
 
-            case REMOVE_FIRST_SPACE -> {
+            case REMOVE_FIRST_SPACE: {
                 if (ch == ' ')
                     nextChar();
-            }
+            } break;
 
-            case RETAIN_ALL -> { }
+            case RETAIN_ALL: { } break;
         }
         int pos = bp;
         int depth = 1;
 
         while (bp < buflen) {
             switch (ch) {
-                case '\n', '\r', '\f', ' ', '\t' -> {
-                }
+                case '\n':
+                case '\r':
+                case '\f':
+                case ' ':
+                case '\t': {
+                } break;
 
-                case '{' -> {
+                case '{': {
                     newline = false;
                     lastNonWhite = bp;
                     depth++;
-                }
+                } break;
 
-                case '}' -> {
+                case '}': {
                     if (--depth == 0) {
                         return m.at(pos).newTextTree(newString(pos, bp));
                     }
                     newline = false;
                     lastNonWhite = bp;
-                }
+                } break;
 
-                default -> {
+                default: {
                     newline = false;
                     lastNonWhite = bp;
                 }
@@ -451,34 +457,39 @@ public class DocCommentParser {
         while (bp < buflen) {
             switch (ch) {
 
-                case '\n', '\r', '\f', ' ', '\t' -> {
+                case '\n':
+                case '\r':
+                case '\f':
+                case ' ':
+                case '\t': {
                     if (depth == 0)
                         break loop;
-                }
+                } break;
 
-                case '(', '<' -> {
+                case '(':
+                case '<': {
                     newline = false;
                     depth++;
-                }
+                } break;
 
-                case ')', '>' -> {
+                case ')':
+                case '>': {
                     newline = false;
                     --depth;
-                }
+                } break;
 
-                case '}' -> {
+                case '}': {
                     if (bp == pos)
                         return null;
                     newline = false;
-                    break loop;
-                }
+                } break loop;
 
-                case '@' -> {
+                case '@': {
                     if (newline)
                         break loop;
-                }
+                } break;
 
-                default -> {
+                default: {
                     newline = false;
                 }
 
@@ -528,18 +539,21 @@ public class DocCommentParser {
         loop:
         while (bp < buflen) {
             switch (ch) {
-                case '\n', '\r', '\f', ' ', '\t' -> { }
+                case '\n':
+                case '\r':
+                case '\f':
+                case ' ':
+                case '\t': { } break;
 
-                case '"' -> {
+                case '"': {
                     nextChar();
                     // trim trailing white-space?
-                    return m.at(pos).newTextTree(newString(pos, bp));
-                }
+                } return m.at(pos).newTextTree(newString(pos, bp));
 
-                case '@' -> {
+                case '@': {
                     if (newline)
                         break loop;
-                }
+                } break;
             }
             nextChar();
         }
@@ -556,24 +570,28 @@ public class DocCommentParser {
         loop:
         while (bp < buflen) {
             switch (ch) {
-                case '\n', '\r', '\f', ' ', '\t' -> {
+                case '\n':
+                case '\r':
+                case '\f':
+                case ' ':
+                case '\t': {
                     return m.at(pos).newTextTree(newString(pos, bp));
                 }
 
-                case '@' -> {
+                case '@': {
                     if (newline)
                         break loop;
-                }
+                } break;
 
-                case '{' -> {
+                case '{': {
                     depth++;
-                }
+                } break;
 
-                case '}' -> {
+                case '}': {
                     if (depth == 0)
                         return m.at(pos).newTextTree(newString(pos, bp));
                     depth--;
-                }
+                } break;
             }
             newline = false;
             nextChar();
@@ -744,7 +762,7 @@ public class DocCommentParser {
             if (isIdentifierStart(ch)) {
                 String name = StringUtils.toLowerCase(readIdentifier().toString());
                 switch (name) {
-                    case "body" -> {
+                    case "body": {
                         // Check if also followed by <main>
                         // 1. skip rest of <body>
                         while (bp < buflen && ch != '>') {
@@ -769,13 +787,11 @@ public class DocCommentParser {
                         }
                         // if <body> is _not_ followed by <main> then this is the
                         // end of the preamble
-                        return true;
-                    }
+                    } return true;
 
-                    case "main" -> {
+                    case "main": {
                         // <main> is unconditionally the end of the preamble
-                        return true;
-                    }
+                    } return true;
                 }
             }
             return false;
@@ -803,7 +819,8 @@ public class DocCommentParser {
                 if (isIdentifierStart(ch)) {
                     String name = StringUtils.toLowerCase(readIdentifier().toString());
                     switch (name) {
-                        case "body", "main" -> {
+                        case "body":
+                        case "main": {
                             return true;
                         }
                     }
@@ -1005,9 +1022,9 @@ public class DocCommentParser {
 
     protected void attrValueChar(ListBuffer<DCTree> list) {
         switch (ch) {
-            case '&' -> entity(list);
-            case '{' -> inlineTag(list);
-            default  -> nextChar();
+            case '&': entity(list); break;
+            case '{': inlineTag(list); break;
+            default: nextChar(); break;
         }
     }
 
@@ -1051,13 +1068,16 @@ public class DocCommentParser {
         loop:
         while (i > pos) {
             switch (buf[i]) {
-                case '\f', '\n', '\r' -> {
+                case '\f':
+                case '\n':
+                case '\r': {
                     newline = true;
-                }
+                } break;
 
-                case '\t', ' ' -> { }
+                case '\t':
+                case ' ': { }; break;
 
-                default -> {
+                default: {
                     break loop;
                 }
             }
@@ -1135,11 +1155,22 @@ public class DocCommentParser {
     }
 
     protected boolean isUnquotedAttrValueTerminator(char ch) {
-        return switch (ch) {
-            case '\f', '\n', '\r', '\t', ' ',
-                    '"', '\'', '`', '=', '<', '>' -> true;
-            default -> false;
-        };
+        switch (ch) {
+            case '\f':
+            case '\n':
+            case '\r':
+            case '\t':
+            case ' ':
+            case '"':
+            case '\'':
+            case '`':
+            case '=':
+            case '<':
+            case '>':
+              return true;
+            default:
+              return false;
+        }
     }
 
     protected boolean isWhitespace(char ch) {
@@ -1387,11 +1418,12 @@ public class DocCommentParser {
             new TagParser(TagParser.Kind.EITHER, DCTree.Kind.RETURN) {
                 @Override
                 public DCTree parse(int pos, Kind kind) {
-                    List<DCTree> description = switch (kind) {
-                        case BLOCK -> blockContent();
-                        case INLINE -> inlineContent();
-                        default -> throw new IllegalArgumentException(kind.toString());
-                    };
+                    List<DCTree> description;
+                    switch (kind) {
+                        case BLOCK: description = blockContent(); break;
+                        case INLINE: description = inlineContent(); break;
+                        default: throw new IllegalArgumentException(kind.toString());
+                    }
                     return m.at(pos).newReturnTree(kind == Kind.INLINE, description);
                 }
             },
@@ -1402,7 +1434,7 @@ public class DocCommentParser {
                 public DCTree parse(int pos) throws ParseException {
                     skipWhitespace();
                     switch (ch) {
-                        case '"' -> {
+                        case '"': {
                             DCText string = quotedString();
                             if (string != null) {
                                 skipWhitespace();
@@ -1411,25 +1443,25 @@ public class DocCommentParser {
                                     return m.at(pos).newSeeTree(List.<DCTree>of(string));
                                 }
                             }
-                        }
+                        } break;
 
-                        case '<' -> {
+                        case '<': {
                             List<DCTree> html = blockContent();
                             if (html != null)
                                 return m.at(pos).newSeeTree(html);
-                        }
+                        } break;
 
-                        case '@' -> {
+                        case '@': {
                             if (newline)
                                 throw new ParseException("dc.no.content");
-                        }
+                        } break;
 
-                        case EOI -> {
+                        case EOI: {
                             if (bp == buf.length - 1)
                                 throw new ParseException("dc.no.content");
-                        }
+                        } break;
 
-                        default -> {
+                        default: {
                             if (isJavaIdentifierStart(ch) || ch == '#') {
                                 DCReference ref = reference(ReferenceParser.Mode.MEMBER_OPTIONAL);
                                 List<DCTree> description = blockContent();
@@ -1651,15 +1683,15 @@ public class DocCommentParser {
                     skipWhitespace();
                     DCText format;
                     switch (ch) {
-                        case '%' -> {
+                        case '%': {
                             format = inlineWord();
                             skipWhitespace();
-                        }
-                        case '"' -> {
+                        } break;
+                        case '"': {
                             format = quotedString();
                             skipWhitespace();
-                        }
-                        default -> {
+                        } break;
+                        default: {
                             format = null;
                         }
                     }

@@ -3303,7 +3303,9 @@ public class JavacParser implements Parser {
             switch (token) {
                 case BYTE: case SHORT: case INT: case LONG: case FLOAT:
                 case DOUBLE: case BOOLEAN: case CHAR: case VOID:
-                case ASSERT, ENUM, IDENTIFIER:
+                case ASSERT:
+                case ENUM:
+                case IDENTIFIER:
                     if (typeDepth == 0 && peekToken(lookahead, LAX_IDENTIFIER)) {
                         if (parenDepth == 0) {
                             return PatternResult.PATTERN;
@@ -3324,7 +3326,11 @@ public class JavacParser implements Parser {
                         }
                     }
                     break;
-                case DOT, QUES, EXTENDS, SUPER, COMMA: break;
+                case DOT:
+                case QUES:
+                case EXTENDS:
+                case SUPER:
+                case COMMA: break;
                 case LT: typeDepth++; break;
                 case GTGTGT: typeDepth--;
                 case GTGT: typeDepth--;
@@ -4838,24 +4844,40 @@ public class JavacParser implements Parser {
     }
 
     private boolean allowedAfterSealedOrNonSealed(Token next, boolean local, boolean currentIsNonSealed) {
-        return local ?
+        if (local) {
             switch (next.kind) {
-                case MONKEYS_AT -> {
+                case MONKEYS_AT: {
                     Token afterNext = S.token(2);
-                    yield afterNext.kind != INTERFACE || currentIsNonSealed;
+                    return afterNext.kind != INTERFACE || currentIsNonSealed;
                 }
-                case ABSTRACT, FINAL, STRICTFP, CLASS, INTERFACE, ENUM -> true;
-                default -> false;
-            } :
+                case ABSTRACT:
+                case FINAL:
+                case STRICTFP:
+                case CLASS:
+                case INTERFACE:
+                case ENUM: return true;
+                default: return false;
+            }
+        } else {
             switch (next.kind) {
-                case MONKEYS_AT -> {
+                case MONKEYS_AT: {
                     Token afterNext = S.token(2);
-                    yield afterNext.kind != INTERFACE || currentIsNonSealed;
+                    return afterNext.kind != INTERFACE || currentIsNonSealed;
                 }
-                case PUBLIC, PROTECTED, PRIVATE, ABSTRACT, STATIC, FINAL, STRICTFP, CLASS, INTERFACE, ENUM -> true;
-                case IDENTIFIER -> isNonSealedIdentifier(next, currentIsNonSealed ? 3 : 1) || next.name() == names.sealed;
-                default -> false;
-            };
+                case PUBLIC:
+                case PROTECTED:
+                case PRIVATE:
+                case ABSTRACT:
+                case STATIC:
+                case FINAL:
+                case STRICTFP:
+                case CLASS:
+                case INTERFACE:
+                case ENUM: return true;
+                case IDENTIFIER: return isNonSealedIdentifier(next, currentIsNonSealed ? 3 : 1) || next.name() == names.sealed;
+                default: return false;
+            }
+        }
     }
 
     /** MethodDeclaratorRest =

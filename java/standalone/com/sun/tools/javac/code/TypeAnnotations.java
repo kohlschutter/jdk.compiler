@@ -83,6 +83,7 @@ import standalone.com.sun.tools.javac.util.List;
 import standalone.com.sun.tools.javac.util.ListBuffer;
 import standalone.com.sun.tools.javac.util.Log;
 import standalone.com.sun.tools.javac.util.Names;
+import standalone.javax.lang.model.element.ElementShim;
 
 import static standalone.com.sun.tools.javac.code.Flags.RECORD;
 import static standalone.com.sun.tools.javac.code.Kinds.Kind.*;
@@ -366,9 +367,9 @@ public class TypeAnnotations {
             // type is non-null, add type annotations from declaration context to the type
             type = typeWithAnnotations(typetree, type, typeAnnotations, onlyTypeAnnos.toList(), typeAnnotationPosition);
 
-            if (sym.getKind() == ElementKind.METHOD) {
+            if (sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.METHOD) {
                 sym.type.asMethodType().restype = type;
-            } else if (sym.getKind() == ElementKind.PARAMETER && currentLambda == null) {
+            } else if (sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.PARAMETER && currentLambda == null) {
                 sym.type = type;
                 if (sym.getQualifiedName().equals(names._this)) {
                     sym.owner.type.asMethodType().recvtype = type;
@@ -395,11 +396,11 @@ public class TypeAnnotations {
 
             sym.appendUniqueTypeAttributes(typeAnnotations);
 
-            if (sym.getKind() == ElementKind.PARAMETER ||
-                sym.getKind() == ElementKind.LOCAL_VARIABLE ||
-                sym.getKind() == ElementKind.RESOURCE_VARIABLE ||
-                sym.getKind() == ElementKind.EXCEPTION_PARAMETER ||
-                sym.getKind() == ElementKind.BINDING_VARIABLE) {
+            if (sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.PARAMETER ||
+                sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.LOCAL_VARIABLE ||
+                sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.RESOURCE_VARIABLE ||
+                sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.EXCEPTION_PARAMETER ||
+                sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.BINDING_VARIABLE) {
                 appendTypeAnnotationsToOwner(sym, typeAnnotations);
             }
         }
@@ -467,7 +468,7 @@ public class TypeAnnotations {
                 JCTree enclTr = typetree;
 
                 while (enclEl != null &&
-                        enclEl.getKind() != ElementKind.PACKAGE &&
+                        ElementShim.getKindStandalone(enclEl) != standalone.javax.lang.model.element.ElementKind.PACKAGE &&
                         enclTy != null &&
                         enclTy.getKind() != TypeKind.NONE &&
                         enclTy.getKind() != TypeKind.ERROR &&
@@ -524,7 +525,7 @@ public class TypeAnnotations {
 
                 Type topTy = enclTy;
                 while (enclEl != null &&
-                        enclEl.getKind() != ElementKind.PACKAGE &&
+                        ElementShim.getKindStandalone(enclEl) != standalone.javax.lang.model.element.ElementKind.PACKAGE &&
                         topTy != null &&
                         topTy.getKind() != TypeKind.NONE &&
                         topTy.getKind() != TypeKind.ERROR) {
@@ -931,10 +932,10 @@ public class TypeAnnotations {
 
                 case VARIABLE:
                     VarSymbol v = ((JCVariableDecl) frame).sym;
-                    if (v.getKind() != ElementKind.FIELD) {
+                    if (v.getKindStandalone() != standalone.javax.lang.model.element.ElementKind.FIELD) {
                         appendTypeAnnotationsToOwner(v, v.getRawTypeAttributes());
                     }
-                    switch (v.getKind()) {
+                    switch (v.getKindStandalone()) {
                         case BINDING_VARIABLE:
                         case LOCAL_VARIABLE:
                             return TypeAnnotationPosition
@@ -970,7 +971,7 @@ public class TypeAnnotations {
                                                   currentLambda,
                                                   frame.pos);
                         default:
-                            throw new AssertionError("Found unexpected type annotation for variable: " + v + " with kind: " + v.getKind());
+                            throw new AssertionError("Found unexpected type annotation for variable: " + v + " with kind: " + v.getKindStandalone());
                     }
 
                 case ANNOTATED_TYPE: {
@@ -982,7 +983,7 @@ public class TypeAnnotations {
                         final Type utype = atypetree.underlyingType.type;
                         Assert.checkNonNull(utype);
                         Symbol tsym = utype.tsym;
-                        if (tsym.getKind().equals(ElementKind.TYPE_PARAMETER) ||
+                        if (tsym.getKindStandalone().equals(ElementKind.TYPE_PARAMETER) ||
                                 utype.getKind().equals(TypeKind.WILDCARD) ||
                                 utype.getKind().equals(TypeKind.ARRAY)) {
                             // Type parameters, wildcards, and arrays have the declaring
@@ -1233,41 +1234,41 @@ public class TypeAnnotations {
                 // there are no annotations of either kind.
             } else if (tree.sym == null) {
                 Assert.error("Visiting tree node before memberEnter");
-            } else if (tree.sym.getKind() == ElementKind.PARAMETER) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.PARAMETER) {
                 // Parameters are handled in visitMethodDef or visitLambda.
-            } else if (tree.sym.getKind() == ElementKind.FIELD) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.FIELD) {
                 if (sigOnly) {
                     TypeAnnotationPosition pos =
                         TypeAnnotationPosition.field(tree.pos);
                     separateAnnotationsKinds(tree, tree.vartype, tree.sym.type, tree.sym, pos);
                 }
-            } else if (tree.sym.getKind() == ElementKind.LOCAL_VARIABLE) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.LOCAL_VARIABLE) {
                 final TypeAnnotationPosition pos =
                     TypeAnnotationPosition.localVariable(currentLambda,
                                                          tree.pos);
                 if (!tree.declaredUsingVar()) {
                     separateAnnotationsKinds(tree, tree.vartype, tree.sym.type, tree.sym, pos);
                 }
-            } else if (tree.sym.getKind() == ElementKind.BINDING_VARIABLE) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.BINDING_VARIABLE) {
                 final TypeAnnotationPosition pos =
                     TypeAnnotationPosition.localVariable(currentLambda,
                                                          tree.pos);
                 separateAnnotationsKinds(tree, tree.vartype, tree.sym.type, tree.sym, pos);
-            } else if (tree.sym.getKind() == ElementKind.EXCEPTION_PARAMETER) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.EXCEPTION_PARAMETER) {
                 final TypeAnnotationPosition pos =
                     TypeAnnotationPosition.exceptionParameter(currentLambda,
                                                               tree.pos);
                 separateAnnotationsKinds(tree, tree.vartype, tree.sym.type, tree.sym, pos);
-            } else if (tree.sym.getKind() == ElementKind.RESOURCE_VARIABLE) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.RESOURCE_VARIABLE) {
                 final TypeAnnotationPosition pos =
                     TypeAnnotationPosition.resourceVariable(currentLambda,
                                                             tree.pos);
                 separateAnnotationsKinds(tree, tree.vartype, tree.sym.type, tree.sym, pos);
-            } else if (tree.sym.getKind() == ElementKind.ENUM_CONSTANT) {
+            } else if (tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.ENUM_CONSTANT) {
                 // No type annotations can occur here.
             } else {
                 // There is nothing else in a variable declaration that needs separation.
-                Assert.error("Unhandled variable kind: " + tree.sym.getKind());
+                Assert.error("Unhandled variable kind: " + tree.sym.getKindStandalone());
             }
 
             scan(tree.mods);
@@ -1278,7 +1279,7 @@ public class TypeAnnotations {
 
             // Now that type and declaration annotations have been segregated into their own buckets ...
             if (sigOnly) {
-                if (tree.sym != null && tree.sym.getKind() == ElementKind.FIELD && (tree.sym.flags_field & RECORD) != 0) {
+                if (tree.sym != null && tree.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.FIELD && (tree.sym.flags_field & RECORD) != 0) {
                     RecordComponent rc = ((ClassSymbol)tree.sym.owner).getRecordComponent(tree.sym);
                     rc.setTypeAttributes(tree.sym.getRawTypeAttributes());
                     // to get all the type annotations applied to the type

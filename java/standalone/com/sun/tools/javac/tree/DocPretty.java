@@ -28,6 +28,7 @@ package standalone.com.sun.tools.javac.tree;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.nio.channels.IllegalSelectorException;
 import java.util.List;
 
 import standalone.com.sun.source.doctree.*;
@@ -123,16 +124,22 @@ public class DocPretty implements DocTreeVisitor<Void,Void> {
      * Traversal methods
      *************************************************************************/
 
+    private String switchValueKind(ValueKind kind) {
+      switch(kind) {
+        case EMPTY: return null;
+        case UNQUOTED: return "";
+        case SINGLE: return "'";
+        case DOUBLE: return"\"";
+        default:
+          throw new IllegalStateException("Unexpected kind: " + kind);
+      }
+    }
+    
     @Override @DefinedBy(Api.COMPILER_TREE)
     public Void visitAttribute(AttributeTree node, Void p) {
         try {
             print(node.getName());
-            String quote = switch (node.getValueKind()) {
-                case EMPTY -> null;
-                case UNQUOTED -> "";
-                case SINGLE -> "'";
-                case DOUBLE -> "\"";
-            };
+            String quote = switchValueKind(node.getValueKind());
             if (quote != null) {
                 print('=');
                 print(quote);

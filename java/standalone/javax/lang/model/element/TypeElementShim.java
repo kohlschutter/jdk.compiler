@@ -2,7 +2,6 @@ package standalone.javax.lang.model.element;
 
 import java.util.List;
 
-import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -38,6 +37,10 @@ public interface TypeElementShim extends TypeElement {
       return List.of();
   }
   
+  default List<? extends RecordComponentElement> getRecordComponentsStandalone() {
+    return List.of();
+  }
+  
   public static boolean isUnnamed(TypeElement elem) {
     return (elem instanceof TypeElementShim && ((TypeElementShim)elem).isUnnamed());
   }
@@ -45,6 +48,14 @@ public interface TypeElementShim extends TypeElement {
   public static List<? extends TypeMirror> getPermittedSubclasses(TypeElement elem) {
     if (elem instanceof TypeElementShim) {
       return ((TypeElementShim)elem).getPermittedSubclasses();
+    } else {
+      return List.of();
+    }
+  }
+
+  public static List<? extends RecordComponentElement> getRecordComponentsStandalone(TypeElement elem) {
+    if (elem instanceof TypeElementShim) {
+      return ((TypeElementShim)elem).getRecordComponentsStandalone();
     } else {
       return List.of();
     }

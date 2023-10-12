@@ -329,7 +329,7 @@ public class JavacTypes implements javax.lang.model.util.Types {
     }
 
     public Set<MethodSymbol> getOverriddenMethods(Element elem) {
-        if (elem.getKind() != ElementKind.METHOD
+        if (ElementShim.getKindStandalone(elem) != standalone.javax.lang.model.element.ElementKind.METHOD
                 || ElementShim.containsModifier(elem, standalone.javax.lang.model.element.Modifier.STATIC)
                 || ElementShim.containsModifier(elem, standalone.javax.lang.model.element.Modifier.PRIVATE))
             return Collections.emptySet();

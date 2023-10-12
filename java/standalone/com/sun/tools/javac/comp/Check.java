@@ -57,6 +57,7 @@ import standalone.com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.Error;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.Fragment;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.Warning;
+import standalone.javax.lang.model.element.ElementShim;
 import standalone.com.sun.tools.javac.util.List;
 
 import standalone.com.sun.tools.javac.code.Lint;
@@ -84,7 +85,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.ElementKindVisitor14;
+import standalone.javax.lang.model.util.ElementKindVisitor14;
 
 /** Type checking helper class for the attribution phase.
  *
@@ -3618,7 +3619,7 @@ public class Check {
                 if (s.kind == VAR && s.owner.kind != MTH)
                     applicableTargets.add(names.FIELD);
             } else if (target == names.RECORD_COMPONENT) {
-                if (s.getKind() == ElementKind.RECORD_COMPONENT) {
+                if (s.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.RECORD_COMPONENT) {
                     applicableTargets.add(names.RECORD_COMPONENT);
                 }
             } else if (target == names.METHOD) {
@@ -4162,10 +4163,10 @@ public class Check {
             Feature.MODULES.allowedInSource(source)) {
             NestingKind nestingKind = c.getNestingKind();
             switch (nestingKind) {
-                case ANONYMOUS,
-                     LOCAL -> {return;}
-                case TOP_LEVEL -> {;} // No additional checks needed
-                case MEMBER -> {
+                case ANONYMOUS:
+                case LOCAL: {return;}
+                case TOP_LEVEL: {;}break; // No additional checks needed
+                case MEMBER: {
                     // For nested member classes, all the enclosing
                     // classes must be public or protected.
                     Symbol owner = c.owner;
@@ -4174,6 +4175,7 @@ public class Check {
                             return;
                         owner = owner.owner;
                     }
+                    break;
                 }
             }
 
@@ -4713,13 +4715,19 @@ public class Check {
             }
         }
     }
+    
+    private Type switchLabelType(JCCaseLabel label) {
+      switch (label.getTag()) {
+        case PATTERNCASELABEL: return ((JCPatternCaseLabel) label).pat.type;
+        case CONSTANTCASELABEL: return types.boxedTypeOrType(((JCConstantCaseLabel) label).expr.type);
+        default: throw Assert.error("Unexpected tree kind: " + label.getTag());
+
+      }
+    }
+    
         //where:
         private Type labelType(JCCaseLabel label) {
-            return types.erasure(switch (label.getTag()) {
-                case PATTERNCASELABEL -> ((JCPatternCaseLabel) label).pat.type;
-                case CONSTANTCASELABEL -> types.boxedTypeOrType(((JCConstantCaseLabel) label).expr.type);
-                default -> throw Assert.error("Unexpected tree kind: " + label.getTag());
-            });
+            return types.erasure(switchLabelType(label));
         }
         private boolean patternDominated(JCPattern existingPattern, JCPattern currentPattern) {
             Type existingPatternType = types.erasure(existingPattern.type);
@@ -4820,7 +4828,7 @@ public class Check {
      * public void writeExternal(ObjectOutput) throws IOException
      * public void readExternal(ObjectInput) throws IOException
      */
-    private class SerialTypeVisitor extends ElementKindVisitor14<Void, JCClassDecl> {
+    private class SerialTypeVisitor extends standalone.javax.lang.model.util.ElementKindVisitor14<Void, JCClassDecl> {
         SerialTypeVisitor() {
             this.lint = Check.this.lint;
         }
@@ -4877,8 +4885,8 @@ public class Check {
             for(Symbol el : c.getEnclosedElements()) {
                 runUnderLint(el, p, (enclosed, tree) -> {
                     String name = null;
-                    switch(enclosed.getKind()) {
-                    case FIELD -> {
+                    switch(enclosed.getKindStandalone()) {
+                    case FIELD: {
                         if (!serialPersistentFieldsPresent) {
                             var flags = enclosed.flags();
                             if ( ((flags & TRANSIENT) == 0) &&
@@ -4911,12 +4919,13 @@ public class Check {
                         if (serialFieldNames.contains(name)) {
                             VarSymbol field = (VarSymbol)enclosed;
                             switch (name) {
-                            case "serialVersionUID"       ->  checkSerialVersionUID(tree, e, field);
-                            case "serialPersistentFields" ->  checkSerialPersistentFields(tree, e, field);
-                            default -> throw new AssertionError();
+                            case "serialVersionUID":  checkSerialVersionUID(tree, e, field); break;
+                            case "serialPersistentFields": checkSerialPersistentFields(tree, e, field); break;
+                            default: throw new AssertionError();
                             }
                         }
                     }
+                    break;
 
                     // Correctly checking the serialization-related
                     // methods is subtle. For the methods declared to be
@@ -4942,20 +4951,20 @@ public class Check {
                     // writeReplace could, in principle, by inherited from
                     // a non-serializable superclass and thus not checked
                     // even if compiled with a serializable child class.
-                    case METHOD -> {
+                    case METHOD: {
                         var method = (MethodSymbol)enclosed;
                         name = method.getSimpleName().toString();
                         if (serialMethodNames.contains(name)) {
                             switch (name) {
-                            case "writeObject"      -> checkWriteObject(tree, e, method);
-                            case "writeReplace"     -> checkWriteReplace(tree,e, method);
-                            case "readObject"       -> checkReadObject(tree,e, method);
-                            case "readObjectNoData" -> checkReadObjectNoData(tree, e, method);
-                            case "readResolve"      -> checkReadResolve(tree, e, method);
-                            default ->  throw new AssertionError();
+                            case "writeObject"      : checkWriteObject(tree, e, method); break;
+                            case "writeReplace"     : checkWriteReplace(tree,e, method); break;
+                            case "readObject"       : checkReadObject(tree,e, method); break;
+                            case "readObjectNoData" : checkReadObjectNoData(tree, e, method); break;
+                            case "readResolve"      : checkReadResolve(tree, e, method); break;
+                            default :  throw new AssertionError();
                             }
                         }
-                    }
+                    } break;
                     }
                 });
             }
@@ -5172,24 +5181,24 @@ public class Check {
             for(Element el : e.getEnclosedElements()) {
                 runUnderLint(el, p, (enclosed, tree) -> {
                     String name = enclosed.getSimpleName().toString();
-                    switch(enclosed.getKind()) {
-                    case FIELD -> {
+                    switch(ElementShim.getKindStandalone(enclosed)) {
+                    case FIELD: {
                         var field = (VarSymbol)enclosed;
                         if (serialFieldNames.contains(name)) {
                             log.warning(LintCategory.SERIAL,
                                         TreeInfo.diagnosticPositionFor(field, tree),
                                         Warnings.IneffectualSerialFieldEnum(name));
                         }
-                    }
+                    } break;
 
-                    case METHOD -> {
+                    case METHOD: {
                         var method = (MethodSymbol)enclosed;
                         if (serialMethodNames.contains(name)) {
                             log.warning(LintCategory.SERIAL,
                                         TreeInfo.diagnosticPositionFor(method, tree),
                                         Warnings.IneffectualSerialMethodEnum(name));
                         }
-                    }
+                    } break;
                     }
                 });
             }
@@ -5206,38 +5215,38 @@ public class Check {
             for(Element el : e.getEnclosedElements()) {
                 runUnderLint(el, p, (enclosed, tree) -> {
                     String name = null;
-                    switch(enclosed.getKind()) {
-                    case FIELD -> {
+                    switch(ElementShim.getKindStandalone(enclosed)) {
+                    case FIELD: {
                         var field = (VarSymbol)enclosed;
                         name = field.getSimpleName().toString();
                         switch(name) {
-                        case "serialPersistentFields" -> {
+                        case "serialPersistentFields": {
                             log.warning(LintCategory.SERIAL,
                                         TreeInfo.diagnosticPositionFor(field, tree),
                                         Warnings.IneffectualSerialFieldInterface);
-                        }
+                        } break;
 
-                        case "serialVersionUID" -> {
+                        case "serialVersionUID": {
                             checkSerialVersionUID(tree, e, field);
-                        }
+                        } break;
                         }
                     }
 
-                    case METHOD -> {
+                    case METHOD: {
                         var method = (MethodSymbol)enclosed;
                         name = enclosed.getSimpleName().toString();
                         if (serialMethodNames.contains(name)) {
                             switch (name) {
                             case
-                                "readObject",
-                                "readObjectNoData",
-                                "writeObject"      -> checkPrivateMethod(tree, e, method);
+                                 "readObject":
+                            case "readObjectNoData":
+                            case "writeObject": checkPrivateMethod(tree, e, method); break;
 
                             case
-                                "writeReplace",
-                                "readResolve"      -> checkDefaultIneffective(tree, e, method);
+                                "writeReplace":
+                            case "readResolve": checkDefaultIneffective(tree, e, method); break;
 
-                            default ->  throw new AssertionError();
+                            default: throw new AssertionError();
                             }
 
                         }
@@ -5304,33 +5313,33 @@ public class Check {
             for(Element el : e.getEnclosedElements()) {
                 runUnderLint(el, p, (enclosed, tree) -> {
                     String name = enclosed.getSimpleName().toString();
-                    switch(enclosed.getKind()) {
-                    case FIELD -> {
+                    switch(ElementShim.getKindStandalone(enclosed)) {
+                    case FIELD: {
                         var field = (VarSymbol)enclosed;
                         switch(name) {
-                        case "serialPersistentFields" -> {
+                        case "serialPersistentFields": {
                             log.warning(LintCategory.SERIAL,
                                         TreeInfo.diagnosticPositionFor(field, tree),
                                         Warnings.IneffectualSerialFieldRecord);
-                        }
+                        } break;
 
-                        case "serialVersionUID" -> {
+                        case "serialVersionUID": {
                             // Could generate additional warning that
                             // svuid value is not checked to match for
                             // records.
                             checkSerialVersionUID(tree, e, field);
-                        }
+                        } break;
 
                         }
-                    }
+                    } break;
 
-                    case METHOD -> {
+                    case METHOD: {
                         var method = (MethodSymbol)enclosed;
                         switch(name) {
-                        case "writeReplace" -> checkWriteReplace(tree, e, method);
-                        case "readResolve"  -> checkReadResolve(tree, e, method);
+                        case "writeReplace": checkWriteReplace(tree, e, method); break;
+                        case "readResolve": checkReadResolve(tree, e, method); break;
 
-                        default -> {
+                        default: {
                             if (serialMethodNames.contains(name)) {
                                 log.warning(LintCategory.SERIAL,
                                             TreeInfo.diagnosticPositionFor(method, tree),
@@ -5339,7 +5348,7 @@ public class Check {
                         }
                         }
 
-                    }
+                    } break;
                     }
                 });
             }

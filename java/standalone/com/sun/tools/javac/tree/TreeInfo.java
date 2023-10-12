@@ -799,8 +799,8 @@ public class TreeInfo {
                 result = that;
                 return true;
             }
-            if (this.sym.getKind() == ElementKind.RECORD_COMPONENT) {
-                if (thatSym != null && thatSym.getKind() == ElementKind.FIELD && (thatSym.flags_field & RECORD) != 0) {
+            if (this.sym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.RECORD_COMPONENT) {
+                if (thatSym != null && thatSym.getKindStandalone() == standalone.javax.lang.model.element.ElementKind.FIELD && (thatSym.flags_field & RECORD) != 0) {
                     RecordComponent rc = thatSym.enclClass().getRecordComponent((VarSymbol)thatSym);
                     return checkMatch(rc.declarationFor(), rc);
                 }
@@ -1343,20 +1343,20 @@ public class TreeInfo {
     }
 
     public static Type primaryPatternType(JCTree pat) {
-        return switch (pat.getTag()) {
-            case BINDINGPATTERN -> pat.type;
-            case RECORDPATTERN -> ((JCRecordPattern) pat).type;
-            case ANYPATTERN -> ((JCAnyPattern) pat).type;
-            default -> throw new AssertionError();
-        };
+        switch (pat.getTag()) {
+            case BINDINGPATTERN: return pat.type;
+            case RECORDPATTERN: return ((JCRecordPattern) pat).type;
+            case ANYPATTERN: return ((JCAnyPattern) pat).type;
+            default: throw new AssertionError();
+        }
     }
 
     public static JCTree primaryPatternTypeTree(JCTree pat) {
-        return switch (pat.getTag()) {
-            case BINDINGPATTERN -> ((JCBindingPattern) pat).var.vartype;
-            case RECORDPATTERN -> ((JCRecordPattern) pat).deconstructor;
-            default -> throw new AssertionError();
-        };
+        switch (pat.getTag()) {
+            case BINDINGPATTERN: return ((JCBindingPattern) pat).var.vartype;
+            case RECORDPATTERN: return ((JCRecordPattern) pat).deconstructor;
+            default: throw new AssertionError();
+        }
     }
 
     public static boolean expectedExhaustive(JCSwitch tree) {

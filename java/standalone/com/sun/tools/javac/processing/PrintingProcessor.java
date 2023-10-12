@@ -47,7 +47,10 @@ import standalone.java.util.stream.StreamShim;
 import standalone.javax.annotation.processing.AbstractProcessorShim;
 import standalone.javax.annotation.processing.SupportedSourceVersionStandalone;
 import standalone.javax.lang.model.element.ElementShim;
+import standalone.javax.lang.model.element.RecordComponentElement;
 import standalone.javax.lang.model.element.TypeElementShim;
+import standalone.javax.lang.model.util.SimpleAnnotationValueVisitor14;
+import standalone.javax.lang.model.util.SimpleElementVisitor14;
 
 /**
  * A processor which prints out elements.  Used to implement the
@@ -125,14 +128,14 @@ public class PrintingProcessor extends AbstractProcessorShim {
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         @SuppressWarnings("preview") // isUnnamed
         public PrintingElementVisitor visitExecutable(ExecutableElement e, Boolean p) {
-            ElementKind kind = e.getKind();
+            standalone.javax.lang.model.element.ElementKind kind = ElementShim.getKindStandalone(e);
 
-            if (kind != STATIC_INIT &&
-                kind != INSTANCE_INIT) {
+            if (kind != standalone.javax.lang.model.element.ElementKind.STATIC_INIT &&
+                kind != standalone.javax.lang.model.element.ElementKind.INSTANCE_INIT) {
                 Element enclosing = e.getEnclosingElement();
 
                 // Don't print out the constructor of an anonymous or unnamed class
-                if (kind == CONSTRUCTOR &&
+                if (kind == standalone.javax.lang.model.element.ElementKind.CONSTRUCTOR &&
                     enclosing != null &&
                     (NestingKind.ANONYMOUS ==
                     // Use an anonymous class to determine anonymity!
@@ -185,7 +188,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         @SuppressWarnings("preview") // isUnnamed
         public PrintingElementVisitor visitType(TypeElement e, Boolean p) {
-            ElementKind kind = e.getKind();
+            standalone.javax.lang.model.element.ElementKind kind = ElementShim.getKindStandalone(e);
             NestingKind nestingKind = e.getNestingKind();
 
             if (NestingKind.ANONYMOUS == nestingKind) {
@@ -246,10 +249,10 @@ public class PrintingProcessor extends AbstractProcessorShim {
 
                 printFormalTypeParameters(e, false);
 
-                if (kind == RECORD) {
+                if (kind == standalone.javax.lang.model.element.ElementKind.RECORD) {
                     // Print out record components
                     writer.print("(");
-                    writer.print(e.getRecordComponents()
+                    writer.print(TypeElementShim.getRecordComponentsStandalone(e)
                                  .stream()
                                  .map(recordDes -> annotationsToString(recordDes) + recordDes.asType().toString() + " " + recordDes.getSimpleName())
                                  .collect(Collectors.joining(", ")));
@@ -257,7 +260,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
                 }
 
                 // Print superclass information if informative
-                if (kind == CLASS) {
+                if (kind == standalone.javax.lang.model.element.ElementKind.CLASS) {
                     TypeMirror supertype = e.getSuperclass();
                     if (supertype.getKind() != TypeKind.NONE) {
                         TypeElement e2 = (TypeElement)
@@ -273,12 +276,12 @@ public class PrintingProcessor extends AbstractProcessorShim {
             writer.println(" {");
             indentation++;
 
-            if (kind == ENUM) {
+            if (kind == standalone.javax.lang.model.element.ElementKind.ENUM) {
                 List<Element> enclosedElements = new ArrayList<>(e.getEnclosedElements());
                 // Handle any enum constants specially before other entities.
                 List<Element> enumConstants = new ArrayList<>();
                 for(Element element : enclosedElements) {
-                    if (element.getKind() == ENUM_CONSTANT)
+                    if (ElementShim.getKindStandalone(element) == standalone.javax.lang.model.element.ElementKind.ENUM_CONSTANT)
                         enumConstants.add(element);
                 }
                 if (!enumConstants.isEmpty()) {
@@ -297,7 +300,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
                     this.visit(element);
             } else {
                 for(Element element :
-                        (kind != RECORD ?
+                        (kind != standalone.javax.lang.model.element.ElementKind.RECORD ?
                          e.getEnclosedElements() :
                          StreamShim.toList( e.getEnclosedElements()
                          .stream()
@@ -314,10 +317,10 @@ public class PrintingProcessor extends AbstractProcessorShim {
 
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
         public PrintingElementVisitor visitVariable(VariableElement e, Boolean newLine) {
-            ElementKind kind = e.getKind();
+            standalone.javax.lang.model.element.ElementKind kind = ElementShim.getKindStandalone(e);
             defaultAction(e, newLine);
 
-            if (kind == ENUM_CONSTANT)
+            if (kind == standalone.javax.lang.model.element.ElementKind.ENUM_CONSTANT)
                 writer.print(e.getSimpleName());
             else {
                 writer.print(e.asType().toString() + " " + ((e.getSimpleName().length() == 0) ? "_" : e.getSimpleName()));
@@ -469,8 +472,8 @@ public class PrintingProcessor extends AbstractProcessorShim {
         }
 
         private void printModifiers(Element e) {
-            ElementKind kind = e.getKind();
-            if (kind == PARAMETER || kind == RECORD_COMPONENT) {
+            standalone.javax.lang.model.element.ElementKind kind = ElementShim.getKindStandalone(e);
+            if (kind == standalone.javax.lang.model.element.ElementKind.PARAMETER || kind == standalone.javax.lang.model.element.ElementKind.RECORD_COMPONENT) {
                 // Print annotation inline
                 writer.print(annotationsToString(e));
             } else {
@@ -478,17 +481,11 @@ public class PrintingProcessor extends AbstractProcessorShim {
                 indent();
             }
 
-            if (kind == ENUM_CONSTANT || kind == RECORD_COMPONENT)
+            if (kind == standalone.javax.lang.model.element.ElementKind.ENUM_CONSTANT || kind == standalone.javax.lang.model.element.ElementKind.RECORD_COMPONENT)
                 return;
 
             Set<standalone.javax.lang.model.element.Modifier> modifiers = new LinkedHashSet<>();
-            if (e instanceof ElementShim) {
-              modifiers.addAll(((ElementShim)e).getModifiersStandalone());
-            } else {
-              for (Modifier m : e.getModifiers()) {
-                modifiers.add(standalone.javax.lang.model.element.Modifier.valueOf(m.name()));
-              }
-            }
+            modifiers.addAll(ElementShim.getModifiersStandalone(e));
 
             switch (kind) {
             case ANNOTATION_TYPE:
@@ -510,7 +507,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
             case FIELD:
                 Element enclosingElement = e.getEnclosingElement();
                 if (enclosingElement != null &&
-                    enclosingElement.getKind().isInterface()) {
+                    ElementShim.getKindStandalone(enclosingElement).isInterface()) {
                     modifiers.remove(standalone.javax.lang.model.element.Modifier.PUBLIC);
                     modifiers.remove(standalone.javax.lang.model.element.Modifier.ABSTRACT); // only for methods
                     modifiers.remove(standalone.javax.lang.model.element.Modifier.STATIC);   // only for fields
@@ -592,7 +589,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
                     // returns an array. A stricter check would be
                     // that it is an array of an annotation type and
                     // that annotation type in turn was repeatable.
-                    if (annotationTypeAsElement.getKind() == ElementKind.ANNOTATION_TYPE) {
+                    if (ElementShim.getKindStandalone(annotationTypeAsElement) == standalone.javax.lang.model.element.ElementKind.ANNOTATION_TYPE) {
                         var annotationMethods =
                             ElementFilter.methodsIn(annotationTypeAsElement.getEnclosedElements());
                         if (annotationMethods.size() == 1) {
@@ -690,9 +687,9 @@ public class PrintingProcessor extends AbstractProcessorShim {
         }
 
         private void printInterfaces(TypeElement e) {
-            ElementKind kind = e.getKind();
+            standalone.javax.lang.model.element.ElementKind kind = ElementShim.getKindStandalone(e);
 
-            if(kind != ANNOTATION_TYPE) {
+            if(kind != standalone.javax.lang.model.element.ElementKind.ANNOTATION_TYPE) {
                 List<? extends TypeMirror> interfaces = e.getInterfaces();
                 if (!interfaces.isEmpty()) {
                     writer.print((kind.isClass() ? " implements " : " extends "));

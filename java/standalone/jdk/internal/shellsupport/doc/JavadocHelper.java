@@ -92,6 +92,7 @@ import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.Pair;
 import standalone.java.util.stream.StreamShim;
+import standalone.javax.lang.model.element.ElementShim;
 
 /**Helper to find javadoc and resolve @inheritDoc.
  */
@@ -197,7 +198,7 @@ public abstract class JavadocHelper implements AutoCloseable {
             Element element = trees.getElement(el);
             String docComment = trees.getDocComment(el);
 
-            if (docComment == null && element.getKind() == ElementKind.METHOD) {
+            if (docComment == null && ElementShim.getKindStandalone(element) == standalone.javax.lang.model.element.ElementKind.METHOD) {
                 //if a method does not have a javadoc,
                 //try to use javadoc from the methods overridden by this method:
                 ExecutableElement executableElement = (ExecutableElement) element;
@@ -281,7 +282,7 @@ public abstract class JavadocHelper implements AutoCloseable {
                         //add missing @param, @throws and @return, augmented with {@inheritDoc}
                         //which will be resolved in visitInheritDoc:
                         List<DocTree> augmentedBlockTags = new ArrayList<>(node.getBlockTags());
-                        if (element.getKind() == ElementKind.METHOD) {
+                        if (ElementShim.getKindStandalone(element) == standalone.javax.lang.model.element.ElementKind.METHOD) {
                             ExecutableElement executableElement = (ExecutableElement) element;
                             List<String> parameters =
                                     StreamShim.toList(executableElement.getParameters()
@@ -371,7 +372,7 @@ public abstract class JavadocHelper implements AutoCloseable {
                     //done yet:
                     if (inherited == null) {
                         try {
-                            if (element.getKind() == ElementKind.METHOD) {
+                            if (ElementShim.getKindStandalone(element) == standalone.javax.lang.model.element.ElementKind.METHOD) {
                                 ExecutableElement executableElement = (ExecutableElement) element;
                                 Iterable<ExecutableElement> superMethods =
                                         () -> superMethodsForInheritDoc(task, executableElement).
@@ -674,7 +675,7 @@ public abstract class JavadocHelper implements AutoCloseable {
         }
         //where:
             private String elementSignature(Element el) {
-                switch (el.getKind()) {
+                switch (ElementShim.getKindStandalone(el)) {
                     case ANNOTATION_TYPE: case CLASS: case ENUM: case INTERFACE: case RECORD:
                         return ((TypeElement) el).getQualifiedName().toString();
                     case FIELD:
@@ -686,7 +687,7 @@ public abstract class JavadocHelper implements AutoCloseable {
                     case CONSTRUCTOR: case METHOD:
                         StringBuilder header = new StringBuilder();
                         header.append(elementSignature(el.getEnclosingElement()));
-                        if (el.getKind() == ElementKind.METHOD) {
+                        if (ElementShim.getKindStandalone(el) == standalone.javax.lang.model.element.ElementKind.METHOD) {
                             header.append(".");
                             header.append(el.getSimpleName());
                         }
@@ -701,23 +702,30 @@ public abstract class JavadocHelper implements AutoCloseable {
                         }
                         header.append(")");
                         return header.toString();
-                    case PACKAGE, STATIC_INIT, INSTANCE_INIT, TYPE_PARAMETER,
-                         OTHER, MODULE, RECORD_COMPONENT, BINDING_VARIABLE:
+                    case PACKAGE:
+                    case STATIC_INIT:
+                    case INSTANCE_INIT:
+                    case TYPE_PARAMETER:
+                    case OTHER:
+                    case MODULE:
+                    case RECORD_COMPONENT:
+                    case BINDING_VARIABLE:
                         return el.toString();
                     default:
-                        throw Assert.error(el.getKind().name());
+                        throw Assert.error(ElementShim.getKindStandalone(el).name());
                 }
             }
 
             private TypeElement topLevelType(Element el) {
-                if (el.getKind() == ElementKind.PACKAGE)
+                if (ElementShim.getKindStandalone(el) == standalone.javax.lang.model.element.ElementKind.PACKAGE)
                     return null;
 
-                while (el != null && el.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
+                while (el != null && ElementShim.getKindStandalone(el.getEnclosingElement()) != standalone.javax.lang.model.element.ElementKind.PACKAGE) {
                     el = el.getEnclosingElement();
                 }
 
-                return el != null && (el.getKind().isClass() || el.getKind().isInterface()) ? (TypeElement) el : null;
+                standalone.javax.lang.model.element.ElementKind kindStandalone = ElementShim.getKindStandalone(el);
+                return el != null && (kindStandalone.isClass() || kindStandalone.isInterface()) ? (TypeElement) el : null;
             }
 
             private void fillElementCache(JavacTask task, CompilationUnitTree cut) throws IOException {

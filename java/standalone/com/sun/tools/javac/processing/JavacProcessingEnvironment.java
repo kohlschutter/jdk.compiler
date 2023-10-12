@@ -92,6 +92,7 @@ import standalone.com.sun.tools.javac.util.Name;
 import standalone.com.sun.tools.javac.util.Names;
 import standalone.com.sun.tools.javac.util.Options;
 import standalone.java.util.stream.StreamShim;
+import standalone.javax.lang.model.util.ElementScanner14;
 
 import static standalone.com.sun.tools.javac.code.Lint.LintCategory.PROCESSING;
 import static standalone.com.sun.tools.javac.code.Kinds.Kind.*;

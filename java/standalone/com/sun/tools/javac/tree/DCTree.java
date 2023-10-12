@@ -158,28 +158,41 @@ public abstract class DCTree implements DocTree {
         }
 
         switch (getKind()) {
-            case TEXT -> {
+            case TEXT: {
                 DCText text = (DCText) this;
                 return text.pos + text.text.length();
             }
 
-            case ERRONEOUS -> {
+            case ERRONEOUS: {
                 DCErroneous err = (DCErroneous) this;
                 return err.pos + err.body.length();
             }
 
-            case ESCAPE -> {
+            case ESCAPE: {
                 DCEscape esc = (DCEscape) this;
                 return esc.pos + 2;
             }
 
-            case IDENTIFIER -> {
+            case IDENTIFIER: {
                 DCIdentifier ident = (DCIdentifier) this;
                 return ident.pos + ident.name.length();
             }
 
-            case AUTHOR, DEPRECATED, HIDDEN, PARAM, PROVIDES, RETURN, SEE, SERIAL, SERIAL_DATA, SERIAL_FIELD, SINCE,
-                    THROWS, UNKNOWN_BLOCK_TAG, USES, VERSION -> {
+            case AUTHOR:
+            case DEPRECATED:
+            case HIDDEN:
+            case PARAM:
+            case PROVIDES:
+            case RETURN:
+            case SEE:
+            case SERIAL:
+            case SERIAL_DATA:
+            case SERIAL_FIELD:
+            case SINCE:
+            case THROWS:
+            case UNKNOWN_BLOCK_TAG:
+            case USES:
+            case VERSION: {
                 DCTree last = getLastChild();
 
                 if (last != null) {
@@ -191,17 +204,17 @@ public abstract class DCTree implements DocTree {
                 return this.pos + name.length() + 1;
             }
 
-            case ENTITY -> {
+            case ENTITY: {
                 DCEntity endEl = (DCEntity) this;
                 return endEl.pos + endEl.name.length() + 2;
             }
 
-            case COMMENT -> {
+            case COMMENT: {
                 DCComment endEl = (DCComment) this;
                 return endEl.pos + endEl.body.length();
             }
 
-            case ATTRIBUTE -> {
+            case ATTRIBUTE: {
                 DCAttribute attr = (DCAttribute) this;
                 if (attr.vkind == AttributeTree.ValueKind.EMPTY) {
                     return attr.pos + attr.name.length();
@@ -210,23 +223,25 @@ public abstract class DCTree implements DocTree {
                 if (last != null) {
                     return last.getEndPosition() + (attr.vkind == AttributeTree.ValueKind.UNQUOTED ? 0 : 1);
                 }
+                
+                return NOPOS;
             }
 
-            case DOC_COMMENT ->  {
+            case DOC_COMMENT:  {
                 DCDocComment dc = (DCDocComment) this;
                 DCTree last = getLastChild();
                 return last == null ? dc.pos : last.getEndPosition();
             }
 
-            default -> {
+            default: {
                 DCTree last = getLastChild();
                 if (last != null) {
                     return last.getEndPosition();
+                } else {
+                    return NOPOS;
                 }
             }
         }
-
-        return NOPOS;
     }
 
     public boolean isBlank() {

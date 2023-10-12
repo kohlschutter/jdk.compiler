@@ -927,12 +927,14 @@ public class TransPatterns extends TreeTranslator {
             } else {
                 Assert.checkNonNull(expr.type.constValue());
 
-                return switch (expr.type.getTag()) {
-                    case BYTE, CHAR,
-                         SHORT, INT -> LoadableConstant.Int((Integer) expr.type.constValue());
-                    case CLASS -> LoadableConstant.String((String) expr.type.constValue());
-                    default -> throw new AssertionError();
-                };
+                switch (expr.type.getTag()) {
+                    case BYTE:
+                    case CHAR:
+                    case SHORT:
+                    case INT: return LoadableConstant.Int((Integer) expr.type.constValue());
+                    case CLASS: return LoadableConstant.String((String) expr.type.constValue());
+                    default: throw new AssertionError();
+                }
             }
         } else {
             return null;

@@ -34,6 +34,8 @@ import java.util.*;
 import standalone.com.sun.tools.javac.code.Source.Feature;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
+import standalone.javax.lang.model.element.ElementShim;
+import standalone.javax.lang.model.util.ElementScanner14;
 
 /**
  * Object providing state about a prior round of annotation processing.
@@ -288,7 +290,7 @@ public class JavacRoundEnvironment implements RoundEnvironment {
     }
 
     private void throwIfNotAnnotation(TypeElement a) {
-        if (a.getKind() != ElementKind.ANNOTATION_TYPE)
+        if (ElementShim.getKindStandalone(a) != standalone.javax.lang.model.element.ElementKind.ANNOTATION_TYPE)
             throw new IllegalArgumentException(NOT_AN_ANNOTATION_TYPE + a);
     }
 }

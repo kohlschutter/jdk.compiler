@@ -183,27 +183,27 @@ public enum Source {
     }
 
     public Target requiredTarget() {
-        return switch(this) {
-        case JDK21  -> Target.JDK1_21;
-        case JDK20  -> Target.JDK1_20;
-        case JDK19  -> Target.JDK1_19;
-        case JDK18  -> Target.JDK1_18;
-        case JDK17  -> Target.JDK1_17;
-        case JDK16  -> Target.JDK1_16;
-        case JDK15  -> Target.JDK1_15;
-        case JDK14  -> Target.JDK1_14;
-        case JDK13  -> Target.JDK1_13;
-        case JDK12  -> Target.JDK1_12;
-        case JDK11  -> Target.JDK1_11;
-        case JDK10  -> Target.JDK1_10;
-        case JDK9   -> Target.JDK1_9;
-        case JDK8   -> Target.JDK1_8;
-        case JDK7   -> Target.JDK1_7;
-        case JDK6   -> Target.JDK1_6;
-        case JDK5   -> Target.JDK1_5;
-        case JDK1_4 -> Target.JDK1_4;
-        default     -> Target.JDK1_1;
-        };
+        switch(this) {
+        case JDK21 : return Target.JDK1_21;
+        case JDK20 : return Target.JDK1_20;
+        case JDK19 : return Target.JDK1_19;
+        case JDK18 : return Target.JDK1_18;
+        case JDK17 : return Target.JDK1_17;
+        case JDK16 : return Target.JDK1_16;
+        case JDK15 : return Target.JDK1_15;
+        case JDK14 : return Target.JDK1_14;
+        case JDK13 : return Target.JDK1_13;
+        case JDK12 : return Target.JDK1_12;
+        case JDK11 : return Target.JDK1_11;
+        case JDK10 : return Target.JDK1_10;
+        case JDK9  : return Target.JDK1_9;
+        case JDK8  : return Target.JDK1_8;
+        case JDK7  : return Target.JDK1_7;
+        case JDK6  : return Target.JDK1_6;
+        case JDK5  : return Target.JDK1_5;
+        case JDK1_4: return Target.JDK1_4;
+        default    : return Target.JDK1_1;
+        }
     }
 
     /**
@@ -303,54 +303,54 @@ public enum Source {
     }
 
     public static SourceVersion toSourceVersion(Source source) {
-        return switch(source) {
-        case JDK1_2 -> RELEASE_2;
-        case JDK1_3 -> RELEASE_3;
-        case JDK1_4 -> RELEASE_4;
-        case JDK5   -> RELEASE_5;
-        case JDK6   -> RELEASE_6;
-        case JDK7   -> RELEASE_7;
-        case JDK8   -> RELEASE_8;
-        case JDK9   -> RELEASE_9;
-        case JDK10  -> RELEASE_10;
-        case JDK11  -> RELEASE_11;
-        case JDK12  -> RELEASE_12;
-        case JDK13  -> RELEASE_13;
-        case JDK14  -> RELEASE_14;
-        case JDK15  -> SourceVersion.valueOf("RELEASE_15");
-        case JDK16  -> SourceVersion.valueOf("RELEASE_16");
-        case JDK17  -> SourceVersion.valueOf("RELEASE_17");
-        case JDK18  -> SourceVersion.valueOf("RELEASE_18");
-        case JDK19  -> SourceVersion.valueOf("RELEASE_19");
-        case JDK20  -> SourceVersion.valueOf("RELEASE_20");
-        case JDK21  -> SourceVersion.valueOf("RELEASE_21");
-        default     -> null;
-        };
+        switch(source) {
+        case JDK1_2 : return RELEASE_2;
+        case JDK1_3 : return RELEASE_3;
+        case JDK1_4 : return RELEASE_4;
+        case JDK5   : return RELEASE_5;
+        case JDK6   : return RELEASE_6;
+        case JDK7   : return RELEASE_7;
+        case JDK8   : return RELEASE_8;
+        case JDK9   : return RELEASE_9;
+        case JDK10  : return RELEASE_10;
+        case JDK11  : return RELEASE_11;
+        case JDK12  : return RELEASE_12;
+        case JDK13  : return RELEASE_13;
+        case JDK14  : return SourceVersion.valueOf("RELEASE_14");
+        case JDK15  : return SourceVersion.valueOf("RELEASE_15");
+        case JDK16  : return SourceVersion.valueOf("RELEASE_16");
+        case JDK17  : return SourceVersion.valueOf("RELEASE_17");
+        case JDK18  : return SourceVersion.valueOf("RELEASE_18");
+        case JDK19  : return SourceVersion.valueOf("RELEASE_19");
+        case JDK20  : return SourceVersion.valueOf("RELEASE_20");
+        case JDK21  : return SourceVersion.valueOf("RELEASE_21");
+        default     : return null;
+        }
     }
 
     public static standalone.javax.lang.model.SourceVersion toSourceVersionStandalone(Source source) {
-      return switch(source) {
-      case JDK1_2 -> standalone.javax.lang.model.SourceVersion.RELEASE_2;
-      case JDK1_3 -> standalone.javax.lang.model.SourceVersion.RELEASE_3;
-      case JDK1_4 -> standalone.javax.lang.model.SourceVersion.RELEASE_4;
-      case JDK5   -> standalone.javax.lang.model.SourceVersion.RELEASE_5;
-      case JDK6   -> standalone.javax.lang.model.SourceVersion.RELEASE_6;
-      case JDK7   -> standalone.javax.lang.model.SourceVersion.RELEASE_7;
-      case JDK8   -> standalone.javax.lang.model.SourceVersion.RELEASE_8;
-      case JDK9   -> standalone.javax.lang.model.SourceVersion.RELEASE_9;
-      case JDK10  -> standalone.javax.lang.model.SourceVersion.RELEASE_10;
-      case JDK11  -> standalone.javax.lang.model.SourceVersion.RELEASE_11;
-      case JDK12  -> standalone.javax.lang.model.SourceVersion.RELEASE_12;
-      case JDK13  -> standalone.javax.lang.model.SourceVersion.RELEASE_13;
-      case JDK14  -> standalone.javax.lang.model.SourceVersion.RELEASE_14;
-      case JDK15  -> standalone.javax.lang.model.SourceVersion.RELEASE_15;
-      case JDK16  -> standalone.javax.lang.model.SourceVersion.RELEASE_16;
-      case JDK17  -> standalone.javax.lang.model.SourceVersion.RELEASE_17;
-      case JDK18  -> standalone.javax.lang.model.SourceVersion.RELEASE_18;
-      case JDK19  -> standalone.javax.lang.model.SourceVersion.RELEASE_19;
-      case JDK20  -> standalone.javax.lang.model.SourceVersion.RELEASE_20;
-      case JDK21  -> standalone.javax.lang.model.SourceVersion.RELEASE_21;
-      default     -> null;
-      };
+      switch(source) {
+      case JDK1_2 : return standalone.javax.lang.model.SourceVersion.RELEASE_2;
+      case JDK1_3 : return standalone.javax.lang.model.SourceVersion.RELEASE_3;
+      case JDK1_4 : return standalone.javax.lang.model.SourceVersion.RELEASE_4;
+      case JDK5   : return standalone.javax.lang.model.SourceVersion.RELEASE_5;
+      case JDK6   : return standalone.javax.lang.model.SourceVersion.RELEASE_6;
+      case JDK7   : return standalone.javax.lang.model.SourceVersion.RELEASE_7;
+      case JDK8   : return standalone.javax.lang.model.SourceVersion.RELEASE_8;
+      case JDK9   : return standalone.javax.lang.model.SourceVersion.RELEASE_9;
+      case JDK10  : return standalone.javax.lang.model.SourceVersion.RELEASE_10;
+      case JDK11  : return standalone.javax.lang.model.SourceVersion.RELEASE_11;
+      case JDK12  : return standalone.javax.lang.model.SourceVersion.RELEASE_12;
+      case JDK13  : return standalone.javax.lang.model.SourceVersion.RELEASE_13;
+      case JDK14  : return standalone.javax.lang.model.SourceVersion.RELEASE_14;
+      case JDK15  : return standalone.javax.lang.model.SourceVersion.RELEASE_15;
+      case JDK16  : return standalone.javax.lang.model.SourceVersion.RELEASE_16;
+      case JDK17  : return standalone.javax.lang.model.SourceVersion.RELEASE_17;
+      case JDK18  : return standalone.javax.lang.model.SourceVersion.RELEASE_18;
+      case JDK19  : return standalone.javax.lang.model.SourceVersion.RELEASE_19;
+      case JDK20  : return standalone.javax.lang.model.SourceVersion.RELEASE_20;
+      case JDK21  : return standalone.javax.lang.model.SourceVersion.RELEASE_21;
+      default     : return null;
+      }
   }
 }

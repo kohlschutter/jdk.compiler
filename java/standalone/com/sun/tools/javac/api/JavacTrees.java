@@ -39,7 +39,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
+import standalone.javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
@@ -530,7 +530,7 @@ public class JavacTrees extends DocTrees {
         Symbol javadocSymbol = getElement(path);
         if (javadocSymbol == null)
             return null;
-        ElementKind kind = javadocSymbol.getKind();
+        ElementKind kind = javadocSymbol.getKindStandalone();
         List<? extends Symbol> params = List.nil();
         if (kind == ElementKind.METHOD || kind == ElementKind.CONSTRUCTOR) {
             MethodSymbol ee = (MethodSymbol) javadocSymbol;

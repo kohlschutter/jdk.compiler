@@ -270,7 +270,7 @@ public class Kinds {
     /** A KindName representing a given symbol
      */
     public static KindName kindName(Symbol sym) {
-        switch (sym.getKind()) {
+        switch (sym.getKindStandalone()) {
         case PACKAGE:
             return KindName.PACKAGE;
 
@@ -312,7 +312,7 @@ public class Kinds {
             return KindName.INSTANCE_INIT;
 
         default:
-                throw new AssertionError("Unexpected kind: "+sym.getKind());
+                throw new AssertionError("Unexpected kind: "+sym.getKindStandalone());
         }
     }
 

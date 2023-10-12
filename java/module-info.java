@@ -243,6 +243,7 @@ module standalone.jdk.compiler {
 
     exports standalone.javax.annotation.processing;
     exports standalone.javax.lang.model;
+    exports standalone.javax.lang.model.element;
     exports standalone.javax.tools;
     exports standalone.jdk.internal.javac;
     exports standalone.jdk.internal.misc;
