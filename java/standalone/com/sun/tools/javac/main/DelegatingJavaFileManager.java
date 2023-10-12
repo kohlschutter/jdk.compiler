@@ -41,11 +41,12 @@ import javax.tools.JavaFileObject.Kind;
 import javax.tools.StandardJavaFileManager;
 
 import standalone.com.sun.tools.javac.util.Context;
+import standalone.javax.tools.JavaFileManagerShim;
 
 /**
  * A JavaFileManager that delegates to one of two delegate ClassLoaders.
  */
-public class DelegatingJavaFileManager implements JavaFileManager {
+public class DelegatingJavaFileManager implements JavaFileManagerShim {
 
     public static void installReleaseFileManager(Context context,
                                                  JavaFileManager releaseFM,
@@ -118,7 +119,7 @@ public class DelegatingJavaFileManager implements JavaFileManager {
     @Override
     public JavaFileObject getJavaFileForOutputForOriginatingFiles(Location location, String className, Kind kind,
                                                FileObject... originatingFiles) throws IOException {
-        return delegate(location).getJavaFileForOutputForOriginatingFiles(location, className, kind, originatingFiles);
+        return JavaFileManagerShim.getJavaFileForOutputForOriginatingFiles(delegate(location), location, className, kind, originatingFiles);
     }
 
     @Override
@@ -136,7 +137,7 @@ public class DelegatingJavaFileManager implements JavaFileManager {
     @Override
     public FileObject getFileForOutputForOriginatingFiles(Location location, String packageName, String relativeName,
                                        FileObject... originatingFiles) throws IOException {
-        return delegate(location).getFileForOutputForOriginatingFiles(location, packageName, relativeName, originatingFiles);
+        return JavaFileManagerShim.getFileForOutputForOriginatingFiles(delegate(location), location, packageName, relativeName, originatingFiles);
     }
 
     @Override

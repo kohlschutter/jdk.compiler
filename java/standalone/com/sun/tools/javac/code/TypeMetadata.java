@@ -45,7 +45,7 @@ import standalone.com.sun.tools.javac.util.ListBuffer;
  * If clients wish to store multiple metadata values that are logically related, they should
  * define a metadata type that collects such values in e.g. a list.
  */
-public sealed interface TypeMetadata {
+public /*sealed*/ interface TypeMetadata {
 
     /**
      * A type metadata object holding type annotations. This metadata needs to be mutable,

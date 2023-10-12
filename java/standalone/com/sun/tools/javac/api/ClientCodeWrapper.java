@@ -67,6 +67,7 @@ import standalone.com.sun.tools.javac.util.Context;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.JCDiagnostic;
+import standalone.javax.tools.JavaFileManagerShim;
 
 /**
  *  Wrap objects to enable unchecked exceptions to be caught and handled.
@@ -305,10 +306,10 @@ public class ClientCodeWrapper {
             }
         }
 
-        @Override @DefinedBy(Api.COMPILER)
+        /*@Override*/ @DefinedBy(Api.COMPILER)
         public JavaFileObject getJavaFileForOutputForOriginatingFiles(Location location, String className, Kind kind, FileObject... originatingFiles) throws IOException {
             try {
-                return wrap(clientJavaFileManager.getJavaFileForOutputForOriginatingFiles(location, className, kind, originatingFiles));
+                return wrap(JavaFileManagerShim.getJavaFileForOutputForOriginatingFiles(clientJavaFileManager, location, className, kind, originatingFiles));
             } catch (ClientCodeException e) {
                 throw e;
             } catch (RuntimeException | Error e) {
@@ -327,10 +328,10 @@ public class ClientCodeWrapper {
             }
         }
 
-        @Override @DefinedBy(Api.COMPILER)
+        /*@Override*/ @DefinedBy(Api.COMPILER)
         public FileObject getFileForOutputForOriginatingFiles(Location location, String packageName, String relativeName, FileObject... originatingFiles) throws IOException {
             try {
-                return wrap(clientJavaFileManager.getFileForOutputForOriginatingFiles(location, packageName, relativeName, originatingFiles));
+                return wrap(JavaFileManagerShim.getFileForOutputForOriginatingFiles(clientJavaFileManager, location, packageName, relativeName, originatingFiles));
             } catch (ClientCodeException e) {
                 throw e;
             } catch (RuntimeException | Error e) {

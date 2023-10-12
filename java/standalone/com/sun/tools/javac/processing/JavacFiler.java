@@ -42,6 +42,8 @@ import static java.util.Collections.*;
 
 import javax.annotation.processing.*;
 import standalone.javax.lang.model.SourceVersion;
+import standalone.javax.tools.JavaFileManagerShim;
+
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Element;
@@ -506,7 +508,7 @@ public class JavacFiler implements Filer, Closeable {
                                     JavaFileObject.Kind.CLASS);
 
         JavaFileObject fileObject =
-            fileManager.getJavaFileForOutputForOriginatingFiles(loc, name, kind, originatingFiles(originatingElements));
+            JavaFileManagerShim.getJavaFileForOutputForOriginatingFiles(fileManager, loc, name, kind, originatingFiles(originatingElements));
         checkFileReopening(fileObject, true);
 
         if (lastRound)
@@ -548,7 +550,7 @@ public class JavacFiler implements Filer, Closeable {
             checkName(pkg);
 
         FileObject fileObject =
-            fileManager.getFileForOutputForOriginatingFiles(location, pkg,
+            JavaFileManagerShim.getFileForOutputForOriginatingFiles(fileManager, location, pkg,
                                                             relativeName.toString(), originatingFiles(originatingElements));
         checkFileReopening(fileObject, true);
 
@@ -589,7 +591,7 @@ public class JavacFiler implements Filer, Closeable {
         // invocation.
         FileObject fileObject;
         if (location.isOutputLocation()) {
-            fileObject = fileManager.getFileForOutputForOriginatingFiles(location,
+            fileObject = JavaFileManagerShim.getFileForOutputForOriginatingFiles(fileManager, location,
                     pkg,
                     relativeName.toString());
         } else {

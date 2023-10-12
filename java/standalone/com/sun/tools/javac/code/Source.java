@@ -319,8 +319,8 @@ public enum Source {
         case JDK14  -> RELEASE_14;
         case JDK15  -> RELEASE_15;
         case JDK16  -> RELEASE_16;
-        case JDK17  -> RELEASE_17;
-        case JDK18  -> RELEASE_18;
+        case JDK17  -> SourceVersion.valueOf("RELEASE_17");
+        case JDK18  -> SourceVersion.valueOf("RELEASE_18");
         case JDK19  -> SourceVersion.valueOf("RELEASE_19");
         case JDK20  -> SourceVersion.valueOf("RELEASE_20");
         case JDK21  -> SourceVersion.valueOf("RELEASE_21");

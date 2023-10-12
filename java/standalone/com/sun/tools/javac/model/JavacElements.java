@@ -719,7 +719,7 @@ public class JavacElements implements Elements {
         }
     }
 
-    @Override @DefinedBy(Api.LANGUAGE_MODEL)
+    /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
     public boolean isAutomaticModule(ModuleElement module) {
         ModuleSymbol msym = (ModuleSymbol) module;
         return (msym.flags() & Flags.AUTOMATIC_MODULE) != 0;
@@ -735,7 +735,7 @@ public class JavacElements implements Elements {
         return (((MethodSymbol)e).flags() & Flags.RECORD) != 0;
     }
 
-    @Override @DefinedBy(Api.LANGUAGE_MODEL)
+    /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
     public JavaFileObject getFileObjectOf(Element e) {
         Symbol sym = (Symbol) e;
         return switch(sym.kind) {

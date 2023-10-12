@@ -3456,7 +3456,7 @@ public class Flow {
         }
     }
 
-    sealed interface PatternDescription { }
+    /*sealed*/ interface PatternDescription { }
     public PatternDescription makePatternDescription(Type selectorType, JCPattern pattern) {
         if (pattern instanceof JCBindingPattern binding) {
             Type type = types.isSubtype(selectorType, binding.type)
