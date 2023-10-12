@@ -23,7 +23,7 @@
  * questions.
  */
 
-package javax.lang.model;
+package standalone.javax.lang.model;
 
 import java.util.Collections;
 import java.util.Set;
