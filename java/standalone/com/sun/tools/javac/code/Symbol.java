@@ -68,7 +68,8 @@ import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.List;
 import standalone.com.sun.tools.javac.util.Name;
-import standalone.javax.lang.model.TypeElementShim;
+import standalone.javax.lang.model.element.ElementShim;
+import standalone.javax.lang.model.element.TypeElementShim;
 
 import static standalone.com.sun.tools.javac.code.Flags.*;
 import static standalone.com.sun.tools.javac.code.Kinds.*;
@@ -94,7 +95,7 @@ import static standalone.com.sun.tools.javac.jvm.ByteCodes.string_add;
  *  This code and its internal interfaces are subject to change or
  *  deletion without notice.</b>
  */
-public abstract class Symbol extends AnnoConstruct implements PoolConstant, Element {
+public abstract class Symbol extends AnnoConstruct implements PoolConstant, ElementShim {
 
     /** The kind of this symbol.
      *  @see Kinds
@@ -713,10 +714,21 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         return ElementKind.OTHER;       // most unkind
     }
 
+    /**
+     * @deprecated
+     * @see #getModifiersStandalone()
+     */
     @DefinedBy(Api.LANGUAGE_MODEL)
+    @Deprecated
     public Set<Modifier> getModifiers() {
         apiComplete();
         return Flags.asModifierSet(flags());
+    }
+
+    @DefinedBy(Api.LANGUAGE_MODEL)
+    public Set<standalone.javax.lang.model.element.Modifier> getModifiersStandalone() {
+        apiComplete();
+        return Flags.asModifierSetStandalone(flags());
     }
 
     @DefinedBy(Api.LANGUAGE_MODEL)
@@ -1500,12 +1512,24 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
                 return ElementKind.CLASS;
         }
 
-        @Override @DefinedBy(Api.LANGUAGE_MODEL)
+        /**
+         * @deprecated
+         * @see #getModifiersStandalone()
+         */
+        /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
+        @Deprecated
         public Set<Modifier> getModifiers() {
             apiComplete();
             long flags = flags();
             return Flags.asModifierSet(flags & ~DEFAULT);
         }
+
+//        @Override @DefinedBy(Api.LANGUAGE_MODEL)
+        public Set<standalone.javax.lang.model.element.Modifier> getModifiersStandalone() {
+          apiComplete();
+          long flags = flags();
+          return Flags.asModifierSetStandalone(flags & ~DEFAULT);
+      }
 
         public RecordComponent getRecordComponent(VarSymbol field) {
             for (RecordComponent rc : recordComponents) {
@@ -1967,10 +1991,21 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             return m;
         }
 
+        /**
+         * @deprecated
+         * @see #getModifiersStandalone()
+         */
         @Override @DefinedBy(Api.LANGUAGE_MODEL)
+        @Deprecated
         public Set<Modifier> getModifiers() {
             long flags = flags();
             return Flags.asModifierSet((flags & DEFAULT) != 0 ? flags & ~ABSTRACT : flags);
+        }
+
+        @Override @DefinedBy(Api.LANGUAGE_MODEL)
+        public Set<standalone.javax.lang.model.element.Modifier> getModifiersStandalone() {
+            long flags = flags();
+            return Flags.asModifierSetStandalone((flags & DEFAULT) != 0 ? flags & ~ABSTRACT : flags);
         }
 
         /** The Java source which this symbol represents.

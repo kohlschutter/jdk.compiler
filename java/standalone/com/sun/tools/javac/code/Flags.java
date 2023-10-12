@@ -399,8 +399,8 @@ public class Flags {
      * separated by spaces and in the order suggested by JLS 8.1.1.
      */
     public static String toSource(long flags) {
-        return asModifierSet(flags).stream()
-          .map(Modifier::toString)
+        return asModifierSetStandalone(flags).stream()
+          .map(standalone.javax.lang.model.element.Modifier::toString)
           .collect(Collectors.joining(" "));
     }
 
@@ -433,6 +433,11 @@ public class Flags {
         LocalVarFlags                     = FINAL | PARAMETER,
         ReceiverParamFlags                = PARAMETER;
 
+    /**
+     * @deprecated
+     * @see #asModifierSetStandalone(long)
+     */
+    @Deprecated
     public static Set<Modifier> asModifierSet(long flags) {
         Set<Modifier> modifiers = modifierSets.get(flags);
         if (modifiers == null) {
@@ -442,9 +447,9 @@ public class Flags {
             if (0 != (flags & PRIVATE))   modifiers.add(Modifier.PRIVATE);
             if (0 != (flags & ABSTRACT))  modifiers.add(Modifier.ABSTRACT);
             if (0 != (flags & STATIC))    modifiers.add(Modifier.STATIC);
-            if (0 != (flags & SEALED))    modifiers.add(Modifier.SEALED);
+            if (0 != (flags & SEALED))    modifiers.add(Modifier.valueOf("SEALED"));
             if (0 != (flags & NON_SEALED))
-                                          modifiers.add(Modifier.NON_SEALED);
+                                          modifiers.add(Modifier.valueOf("NON_SEALED"));
             if (0 != (flags & FINAL))     modifiers.add(Modifier.FINAL);
             if (0 != (flags & TRANSIENT)) modifiers.add(Modifier.TRANSIENT);
             if (0 != (flags & VOLATILE))  modifiers.add(Modifier.VOLATILE);
@@ -458,9 +463,36 @@ public class Flags {
         }
         return modifiers;
     }
+    
+    public static Set<standalone.javax.lang.model.element.Modifier> asModifierSetStandalone(long flags) {
+      Set<standalone.javax.lang.model.element.Modifier> modifiers = modifierSetsStandalone.get(flags);
+      if (modifiers == null) {
+          modifiers = java.util.EnumSet.noneOf(standalone.javax.lang.model.element.Modifier.class);
+          if (0 != (flags & PUBLIC))    modifiers.add(standalone.javax.lang.model.element.Modifier.PUBLIC);
+          if (0 != (flags & PROTECTED)) modifiers.add(standalone.javax.lang.model.element.Modifier.PROTECTED);
+          if (0 != (flags & PRIVATE))   modifiers.add(standalone.javax.lang.model.element.Modifier.PRIVATE);
+          if (0 != (flags & ABSTRACT))  modifiers.add(standalone.javax.lang.model.element.Modifier.ABSTRACT);
+          if (0 != (flags & STATIC))    modifiers.add(standalone.javax.lang.model.element.Modifier.STATIC);
+          if (0 != (flags & SEALED))    modifiers.add(standalone.javax.lang.model.element.Modifier.SEALED);
+          if (0 != (flags & NON_SEALED))
+                                        modifiers.add(standalone.javax.lang.model.element.Modifier.NON_SEALED);
+          if (0 != (flags & FINAL))     modifiers.add(standalone.javax.lang.model.element.Modifier.FINAL);
+          if (0 != (flags & TRANSIENT)) modifiers.add(standalone.javax.lang.model.element.Modifier.TRANSIENT);
+          if (0 != (flags & VOLATILE))  modifiers.add(standalone.javax.lang.model.element.Modifier.VOLATILE);
+          if (0 != (flags & SYNCHRONIZED))
+                                        modifiers.add(standalone.javax.lang.model.element.Modifier.SYNCHRONIZED);
+          if (0 != (flags & NATIVE))    modifiers.add(standalone.javax.lang.model.element.Modifier.NATIVE);
+          if (0 != (flags & STRICTFP))  modifiers.add(standalone.javax.lang.model.element.Modifier.STRICTFP);
+          if (0 != (flags & DEFAULT))   modifiers.add(standalone.javax.lang.model.element.Modifier.DEFAULT);
+          modifiers = Collections.unmodifiableSet(modifiers);
+          modifierSetsStandalone.put(flags, modifiers);
+      }
+      return modifiers;
+  }
 
     // Cache of modifier sets.
     private static final Map<Long, Set<Modifier>> modifierSets = new ConcurrentHashMap<>(64);
+    private static final Map<Long, Set<standalone.javax.lang.model.element.Modifier>> modifierSetsStandalone = new ConcurrentHashMap<>(64);
 
     public static boolean isStatic(Symbol symbol) {
         return (symbol.flags() & STATIC) != 0;

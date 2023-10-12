@@ -41,6 +41,7 @@ import standalone.com.sun.tools.javac.code.Symbol.*;
 import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.java.util.stream.StreamShim;
+import standalone.javax.lang.model.element.ElementShim;
 
 import static standalone.com.sun.tools.javac.code.Kinds.Kind.*;
 
@@ -329,8 +330,8 @@ public class JavacTypes implements javax.lang.model.util.Types {
 
     public Set<MethodSymbol> getOverriddenMethods(Element elem) {
         if (elem.getKind() != ElementKind.METHOD
-                || elem.getModifiers().contains(Modifier.STATIC)
-                || elem.getModifiers().contains(Modifier.PRIVATE))
+                || ElementShim.containsModifier(elem, standalone.javax.lang.model.element.Modifier.STATIC)
+                || ElementShim.containsModifier(elem, standalone.javax.lang.model.element.Modifier.PRIVATE))
             return Collections.emptySet();
 
         if (!(elem instanceof MethodSymbol))

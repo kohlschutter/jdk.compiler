@@ -67,7 +67,7 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 
 import standalone.javax.lang.model.SourceVersion;
-import standalone.javax.lang.model.TypeElementShim;
+import standalone.javax.lang.model.element.TypeElementShim;
 
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;

@@ -347,9 +347,7 @@ public class TypeEnter implements Completer {
 
                 try {
                     chk.disablePreviewCheck = true;
-                    String autoImports = """
-                            import static java.lang.StringTemplate.STR;
-                            """;
+                    String autoImports = "import static java.lang.StringTemplate.STR;\n\n";
                     Parser parser = parserFactory.newParser(autoImports, false, false, false, false);
                     JCCompilationUnit importTree = parser.parseCompilationUnit();
 

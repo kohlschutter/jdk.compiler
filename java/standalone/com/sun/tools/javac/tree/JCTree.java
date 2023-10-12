@@ -3085,10 +3085,18 @@ public abstract class JCTree implements Tree, Cloneable, DiagnosticPosition {
 
         @DefinedBy(Api.COMPILER_TREE)
         public Kind getKind() { return Kind.MODIFIERS; }
+        /**
+         * @deprecated
+         * @see #getFlagsStandalone()
+         */
         @DefinedBy(Api.COMPILER_TREE)
+        @Deprecated
         public Set<Modifier> getFlags() {
             return Flags.asModifierSet(flags);
         }
+        public Set<standalone.javax.lang.model.element.Modifier> getFlagsStandalone() {
+          return Flags.asModifierSetStandalone(flags);
+      }
         @DefinedBy(Api.COMPILER_TREE)
         public List<JCAnnotation> getAnnotations() {
             return annotations;

@@ -46,7 +46,8 @@ import standalone.com.sun.tools.javac.util.StringUtils;
 import standalone.java.util.stream.StreamShim;
 import standalone.javax.annotation.processing.AbstractProcessorShim;
 import standalone.javax.annotation.processing.SupportedSourceVersionStandalone;
-import standalone.javax.lang.model.TypeElementShim;
+import standalone.javax.lang.model.element.ElementShim;
+import standalone.javax.lang.model.element.TypeElementShim;
 
 /**
  * A processor which prints out elements.  Used to implement the
@@ -319,7 +320,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
             if (kind == ENUM_CONSTANT)
                 writer.print(e.getSimpleName());
             else {
-                writer.print(e.asType().toString() + " " + (e.getSimpleName().isEmpty() ? "_" : e.getSimpleName()));
+                writer.print(e.asType().toString() + " " + ((e.getSimpleName().length() == 0) ? "_" : e.getSimpleName()));
                 Object constantValue  = e.getConstantValue();
                 if (constantValue != null) {
                     writer.print(" = ");
@@ -480,23 +481,29 @@ public class PrintingProcessor extends AbstractProcessorShim {
             if (kind == ENUM_CONSTANT || kind == RECORD_COMPONENT)
                 return;
 
-            Set<Modifier> modifiers = new LinkedHashSet<>();
-            modifiers.addAll(e.getModifiers());
+            Set<standalone.javax.lang.model.element.Modifier> modifiers = new LinkedHashSet<>();
+            if (e instanceof ElementShim) {
+              modifiers.addAll(((ElementShim)e).getModifiersStandalone());
+            } else {
+              for (Modifier m : e.getModifiers()) {
+                modifiers.add(standalone.javax.lang.model.element.Modifier.valueOf(m.name()));
+              }
+            }
 
             switch (kind) {
             case ANNOTATION_TYPE:
             case INTERFACE:
-                modifiers.remove(Modifier.ABSTRACT);
+                modifiers.remove(standalone.javax.lang.model.element.Modifier.ABSTRACT);
                 break;
 
             case ENUM:
-                modifiers.remove(Modifier.FINAL);
-                modifiers.remove(Modifier.ABSTRACT);
-                modifiers.remove(Modifier.SEALED);
+                modifiers.remove(standalone.javax.lang.model.element.Modifier.FINAL);
+                modifiers.remove(standalone.javax.lang.model.element.Modifier.ABSTRACT);
+                modifiers.remove(standalone.javax.lang.model.element.Modifier.SEALED);
                 break;
 
             case RECORD:
-                modifiers.remove(Modifier.FINAL);
+                modifiers.remove(standalone.javax.lang.model.element.Modifier.FINAL);
                 break;
 
             case METHOD:
@@ -504,17 +511,17 @@ public class PrintingProcessor extends AbstractProcessorShim {
                 Element enclosingElement = e.getEnclosingElement();
                 if (enclosingElement != null &&
                     enclosingElement.getKind().isInterface()) {
-                    modifiers.remove(Modifier.PUBLIC);
-                    modifiers.remove(Modifier.ABSTRACT); // only for methods
-                    modifiers.remove(Modifier.STATIC);   // only for fields
-                    modifiers.remove(Modifier.FINAL);    // only for fields
+                    modifiers.remove(standalone.javax.lang.model.element.Modifier.PUBLIC);
+                    modifiers.remove(standalone.javax.lang.model.element.Modifier.ABSTRACT); // only for methods
+                    modifiers.remove(standalone.javax.lang.model.element.Modifier.STATIC);   // only for fields
+                    modifiers.remove(standalone.javax.lang.model.element.Modifier.FINAL);    // only for fields
                 }
                 break;
 
             }
             if (!modifiers.isEmpty()) {
                 writer.print(modifiers.stream()
-                             .map(Modifier::toString)
+                             .map(standalone.javax.lang.model.element.Modifier::toString)
                              .collect(Collectors.joining(" ", "", " ")));
             }
         }
@@ -697,7 +704,7 @@ public class PrintingProcessor extends AbstractProcessorShim {
         }
 
         private void printPermittedSubclasses(TypeElement e) {
-            List<? extends TypeMirror> subtypes = e.getPermittedSubclasses();
+            List<? extends TypeMirror> subtypes = TypeElementShim.getPermittedSubclasses(e);
             if (!subtypes.isEmpty()) { // could remove this check with more complicated joining call
                 writer.print(" permits ");
                 writer.print(subtypes

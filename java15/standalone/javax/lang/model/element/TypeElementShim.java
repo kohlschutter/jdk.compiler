@@ -1,6 +1,10 @@
-package standalone.javax.lang.model;
+package standalone.javax.lang.model.element;
 
+import java.util.List;
+
+import javax.lang.model.element.RecordComponentElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 
 public interface TypeElementShim extends TypeElement {
   /**
@@ -21,5 +25,9 @@ public interface TypeElementShim extends TypeElement {
   
   public static boolean isUnnamed(TypeElement elem) {
     return (elem instanceof TypeElementShim && ((TypeElementShim)elem).isUnnamed());
+  }
+  
+  public static List<? extends TypeMirror> getPermittedSubclasses(TypeElement elem) {
+    return elem.getPermittedSubclasses();
   }
 }

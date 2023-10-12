@@ -36,6 +36,7 @@ import standalone.com.sun.tools.javac.resources.CompilerProperties.Errors;
 import standalone.com.sun.tools.javac.resources.CompilerProperties.Warnings;
 import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.*;
+import standalone.java.lang.StringShim;
 
 import java.nio.CharBuffer;
 import java.util.Iterator;
@@ -1162,7 +1163,7 @@ public class JavaTokenizer extends UnicodeReader {
                             } else {
                                 char ch = get();
                                 arg = (32 < ch && ch < 127) ? String.valueOf(ch) :
-                                                              "\\u%04x".formatted((int) ch);
+                                                              StringShim.formatted("\\u%04x", (int) ch);
                             }
 
                             lexError(pos, Errors.IllegalChar(arg));
@@ -1205,7 +1206,7 @@ public class JavaTokenizer extends UnicodeReader {
                     }
                     // Remove incidental indentation.
                     try {
-                        string = string.stripIndent();
+                        string = StringShim.stripIndent(string);
                     } catch (Exception ex) {
                         // Error already reported, just use unstripped string.
                     }
@@ -1219,7 +1220,7 @@ public class JavaTokenizer extends UnicodeReader {
                 // Translate escape sequences if present.
                 if (hasEscapeSequences) {
                     try {
-                        string = string.translateEscapes();
+                        string = StringShim.translateEscapes(string);
                     } catch (Exception ex) {
                         // Error already reported, just use untranslated string.
                     }
@@ -1258,7 +1259,7 @@ public class JavaTokenizer extends UnicodeReader {
         List<Token> tokens = List.nil();
         Iterator<Integer> rangeIter = fragmentRanges.iterator();
         for (String fragment : fragment(string)) {
-            fragment = fragment.translateEscapes();
+            fragment = StringShim.translateEscapes(fragment);
             int fragmentPos = rangeIter.next();
             int fragmentEndPos = rangeIter.next();
             Token token = new StringToken(TokenKind.STRINGFRAGMENT,
