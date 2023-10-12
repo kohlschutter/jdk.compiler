@@ -1,8 +1,6 @@
 package standalone.javax.tools;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -31,26 +29,8 @@ public interface JavaFileManagerShim extends JavaFileManager {
     if (mgr instanceof JavaFileManagerShim) {
       return ((JavaFileManagerShim) mgr).getJavaFileForOutputForOriginatingFiles(location,
           className, kind, originatingFiles);
-    }
-
-    try {
-      Method m = mgr.getClass().getMethod("getJavaFileForOutputForOriginatingFiles", Location.class,
-          String.class, Kind.class, FileObject[].class);
-      return (JavaFileObject) m.invoke(mgr, location, className, kind, originatingFiles);
-    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
-        | IllegalArgumentException e) {
+    } else {
       return mgr.getJavaFileForOutput(location, className, kind, siblingFrom(originatingFiles));
-    } catch (InvocationTargetException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof RuntimeException) {
-        throw ((RuntimeException) cause);
-      } else if (cause instanceof Error) {
-        throw ((Error) cause);
-      } else if (cause instanceof IOException) {
-        throw ((IOException) cause);
-      } else {
-        throw new IllegalStateException(e);
-      }
     }
   }
 
@@ -59,27 +39,9 @@ public interface JavaFileManagerShim extends JavaFileManager {
     if (mgr instanceof JavaFileManagerShim) {
       return ((JavaFileManagerShim) mgr).getFileForOutputForOriginatingFiles(location, packageName,
           relativeName, originatingFiles);
-    }
-
-    try {
-      Method m = mgr.getClass().getMethod("getFileForOutputForOriginatingFiles", Location.class,
-          String.class, String.class, FileObject[].class);
-      return (JavaFileObject) m.invoke(mgr, location, packageName, relativeName, originatingFiles);
-    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
-        | IllegalArgumentException e) {
-      return mgr.getFileForOutput(location, packageName, relativeName, siblingFrom(
-          originatingFiles));
-    } catch (InvocationTargetException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof RuntimeException) {
-        throw ((RuntimeException) cause);
-      } else if (cause instanceof Error) {
-        throw ((Error) cause);
-      } else if (cause instanceof IOException) {
-        throw ((IOException) cause);
-      } else {
-        throw new IllegalStateException(e);
-      }
+    } else {
+      return mgr.getFileForOutput(location, packageName, relativeName,
+          siblingFrom(originatingFiles));
     }
   }
 }
