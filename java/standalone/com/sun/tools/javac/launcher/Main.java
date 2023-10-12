@@ -88,7 +88,6 @@ import standalone.com.sun.tools.javac.util.JCDiagnostic.Error;
 
 import standalone.jdk.internal.misc.MainMethodFinder;
 import standalone.jdk.internal.misc.PreviewFeatures;
-import standalone.jdk.internal.misc.VM;
 
 import static javax.tools.JavaFileObject.Kind.SOURCE;
 

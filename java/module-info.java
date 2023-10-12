@@ -217,7 +217,6 @@ import javax.tools.StandardLocation;
  */
 module standalone.jdk.compiler {
     requires transitive java.compiler;
-    requires standalone.jdk.internal.opt;
     requires jdk.zipfs;
 
     requires com.kohlschutter.jdk.home;
