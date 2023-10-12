@@ -66,7 +66,9 @@ import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.TypeElementShim;
+
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
@@ -407,7 +409,7 @@ public class Main {
             throw new Fault(Errors.NoClass);
         }
         TypeElement mainClass = l.mainClass;
-        String mainClassName = (mainClass.isUnnamed() ? mainClass.getSimpleName()
+        String mainClassName = (TypeElementShim.isUnnamed(mainClass) ? mainClass.getSimpleName()
                                                       : mainClass.getQualifiedName()).toString();
         return mainClassName;
     }

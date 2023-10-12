@@ -43,7 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
@@ -626,7 +626,7 @@ public class Arguments {
             log.warning(LintCategory.OPTIONS, Warnings.OptionObsoleteSuppression);
         }
 
-        SourceVersion sv = Source.toSourceVersion(source);
+        SourceVersion sv = Source.toSourceVersionStandalone(source);
         validateAddExports(sv);
         validateAddModules(sv);
         validateAddReads(sv);

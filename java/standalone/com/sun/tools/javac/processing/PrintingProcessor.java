@@ -43,6 +43,9 @@ import java.util.stream.Collectors;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.StringUtils;
+import standalone.javax.annotation.processing.AbstractProcessorShim;
+import standalone.javax.annotation.processing.SupportedSourceVersionStandalone;
+import standalone.javax.lang.model.TypeElementShim;
 
 /**
  * A processor which prints out elements.  Used to implement the
@@ -55,8 +58,8 @@ import standalone.com.sun.tools.javac.util.StringUtils;
  * deletion without notice.</b>
  */
 @SupportedAnnotationTypes("*")
-@SupportedSourceVersion(SourceVersion.RELEASE_21)
-public class PrintingProcessor extends AbstractProcessor {
+@SupportedSourceVersionStandalone(standalone.javax.lang.model.SourceVersion.RELEASE_21)
+public class PrintingProcessor extends AbstractProcessorShim {
     PrintWriter writer;
 
     public PrintingProcessor() {
@@ -141,7 +144,7 @@ public class PrintingProcessor extends AbstractProcessor {
                     (new SimpleElementVisitor14<Boolean, Void>(false) {
                         @Override @DefinedBy(Api.LANGUAGE_MODEL)
                         public Boolean visitType(TypeElement e, Void p) {
-                            return e.isUnnamed();
+                            return TypeElementShim.isUnnamed(e);
                         }
                     }).visit(enclosing)) ) {
                     return this;
@@ -212,7 +215,7 @@ public class PrintingProcessor extends AbstractProcessor {
                         printParameters(constructors.get(0));
                 }
                 writer.print(")");
-            } else if (e.isUnnamed()) {
+            } else if (TypeElementShim.isUnnamed(e)) {
                 writer.println("// Unnamed class in file whose name starts with " + e.getSimpleName());
 
                 for(Element element : e.getEnclosedElements()) {

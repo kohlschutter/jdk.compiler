@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 
 import standalone.com.sun.source.tree.CaseTree;
 import standalone.com.sun.source.tree.MemberReferenceTree.ReferenceMode;

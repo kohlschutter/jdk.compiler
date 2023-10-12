@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import javax.annotation.processing.Processor;
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementVisitor;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileManager;

@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipException;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;

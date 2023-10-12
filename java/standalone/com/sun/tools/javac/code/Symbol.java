@@ -68,6 +68,7 @@ import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.List;
 import standalone.com.sun.tools.javac.util.Name;
+import standalone.javax.lang.model.TypeElementShim;
 
 import static standalone.com.sun.tools.javac.code.Flags.*;
 import static standalone.com.sun.tools.javac.code.Kinds.*;
@@ -1160,6 +1161,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             this.type = new PackageType(this);
         }
 
+        @Override
         public String toString() {
             return fullname.toString();
         }
@@ -1170,6 +1172,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
         }
 
         @DefinedBy(Api.LANGUAGE_MODEL)
+        @Override
         public boolean isUnnamed() {
             return name.isEmpty() && owner != null;
         }
@@ -1257,7 +1260,7 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
     /** A class for class symbols
      */
     @SuppressWarnings("preview") // isUnnamed()
-    public static class ClassSymbol extends TypeSymbol implements TypeElement {
+    public static class ClassSymbol extends TypeSymbol implements TypeElementShim {
 
         /** a scope for all class members; variables, methods and inner classes
          *  type parameters are not part of this scope

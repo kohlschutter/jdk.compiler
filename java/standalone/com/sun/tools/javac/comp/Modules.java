@@ -1801,7 +1801,7 @@ public class Modules extends JCTree.Visitor {
     }
 
     private boolean isValidName(CharSequence name) {
-        return SourceVersion.isName(name, Source.toSourceVersion(source));
+        return standalone.javax.lang.model.SourceVersion.isName(name, Source.toSourceVersionStandalone(source));
     }
 
     // DEBUG

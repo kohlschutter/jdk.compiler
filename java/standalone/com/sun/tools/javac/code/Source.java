@@ -321,10 +321,36 @@ public enum Source {
         case JDK16  -> RELEASE_16;
         case JDK17  -> RELEASE_17;
         case JDK18  -> RELEASE_18;
-        case JDK19  -> RELEASE_19;
-        case JDK20  -> RELEASE_20;
-        case JDK21  -> RELEASE_21;
+        case JDK19  -> SourceVersion.valueOf("RELEASE_19");
+        case JDK20  -> SourceVersion.valueOf("RELEASE_20");
+        case JDK21  -> SourceVersion.valueOf("RELEASE_21");
         default     -> null;
         };
     }
+
+    public static standalone.javax.lang.model.SourceVersion toSourceVersionStandalone(Source source) {
+      return switch(source) {
+      case JDK1_2 -> standalone.javax.lang.model.SourceVersion.RELEASE_2;
+      case JDK1_3 -> standalone.javax.lang.model.SourceVersion.RELEASE_3;
+      case JDK1_4 -> standalone.javax.lang.model.SourceVersion.RELEASE_4;
+      case JDK5   -> standalone.javax.lang.model.SourceVersion.RELEASE_5;
+      case JDK6   -> standalone.javax.lang.model.SourceVersion.RELEASE_6;
+      case JDK7   -> standalone.javax.lang.model.SourceVersion.RELEASE_7;
+      case JDK8   -> standalone.javax.lang.model.SourceVersion.RELEASE_8;
+      case JDK9   -> standalone.javax.lang.model.SourceVersion.RELEASE_9;
+      case JDK10  -> standalone.javax.lang.model.SourceVersion.RELEASE_10;
+      case JDK11  -> standalone.javax.lang.model.SourceVersion.RELEASE_11;
+      case JDK12  -> standalone.javax.lang.model.SourceVersion.RELEASE_12;
+      case JDK13  -> standalone.javax.lang.model.SourceVersion.RELEASE_13;
+      case JDK14  -> standalone.javax.lang.model.SourceVersion.RELEASE_14;
+      case JDK15  -> standalone.javax.lang.model.SourceVersion.RELEASE_15;
+      case JDK16  -> standalone.javax.lang.model.SourceVersion.RELEASE_16;
+      case JDK17  -> standalone.javax.lang.model.SourceVersion.RELEASE_17;
+      case JDK18  -> standalone.javax.lang.model.SourceVersion.RELEASE_18;
+      case JDK19  -> standalone.javax.lang.model.SourceVersion.RELEASE_19;
+      case JDK20  -> standalone.javax.lang.model.SourceVersion.RELEASE_20;
+      case JDK21  -> standalone.javax.lang.model.SourceVersion.RELEASE_21;
+      default     -> null;
+      };
+  }
 }

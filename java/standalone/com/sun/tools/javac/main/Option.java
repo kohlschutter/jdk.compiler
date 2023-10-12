@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 
 import com.kohlschutter.jdk.standaloneutil.misc.VM;
 import standalone.com.sun.tools.doclint.DocLint;

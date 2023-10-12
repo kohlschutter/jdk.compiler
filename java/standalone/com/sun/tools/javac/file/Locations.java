@@ -69,7 +69,7 @@ import java.util.stream.Stream;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;

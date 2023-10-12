@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 import static java.util.Collections.*;
 
 import javax.annotation.processing.*;
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Element;

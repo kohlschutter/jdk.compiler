@@ -241,6 +241,8 @@ module standalone.jdk.compiler {
     exports standalone.com.sun.tools.javac.tree;
     exports standalone.com.sun.tools.javac.util;
 
+    exports standalone.javax.lang.model;
+
     uses javax.annotation.processing.Processor;
     uses standalone.com.sun.source.util.Plugin;
     uses standalone.com.sun.tools.doclint.DocLint;

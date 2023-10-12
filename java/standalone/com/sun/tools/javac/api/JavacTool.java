@@ -143,11 +143,11 @@ public final class JavacTool implements JavaCompiler {
                     int sep = cls.indexOf('/'); // implicit null check
                     if (sep > 0) {
                         String mod = cls.substring(0, sep);
-                        if (!SourceVersion.isName(mod))
+                        if (!standalone.javax.lang.model.SourceVersion.isName(mod))
                             throw new IllegalArgumentException("Not a valid module name: " + mod);
                         cls = cls.substring(sep + 1);
                     }
-                    if (!SourceVersion.isName(cls))
+                    if (!standalone.javax.lang.model.SourceVersion.isName(cls))
                         throw new IllegalArgumentException("Not a valid class name: " + cls);
                 }
             }
@@ -218,6 +218,12 @@ public final class JavacTool implements JavaCompiler {
     public Set<SourceVersion> getSourceVersions() {
         return Collections.unmodifiableSet(EnumSet.range(SourceVersion.RELEASE_3,
                                                          SourceVersion.latest()));
+    }
+
+//    @Override @DefinedBy(Api.COMPILER)
+    public Set<standalone.javax.lang.model.SourceVersion> getSourceVersionsStandalone() {
+        return Collections.unmodifiableSet(EnumSet.range(standalone.javax.lang.model.SourceVersion.RELEASE_3,
+                                                         standalone.javax.lang.model.SourceVersion.latest()));
     }
 
     @Override @DefinedBy(Api.COMPILER)

@@ -759,11 +759,18 @@ public class JavacProcessingEnvironment implements ProcessingEnvironment, Closea
          */
         private void checkSourceVersionCompatibility(Source source, Log log) {
             SourceVersion procSourceVersion = processor.getSupportedSourceVersion();
-            if (procSourceVersion.compareTo(Source.toSourceVersion(source)) < 0 )  {
+            if (compareEnums(procSourceVersion, Source.toSourceVersionStandalone(source)) < 0) {
                 log.warning(Warnings.ProcProcessorIncompatibleSourceVersion(procSourceVersion,
                                                                             processor.getClass().getName(),
                                                                             source.name));
             }
+        }
+
+        private static int compareEnums(Enum<?> a, Enum<?> b) {
+          Integer oa = a.ordinal();
+          Integer ob = b.ordinal();
+
+          return oa.compareTo(ob);
         }
 
         private boolean checkOptionName(String optionName, Log log) {
@@ -1731,6 +1738,11 @@ public class JavacProcessingEnvironment implements ProcessingEnvironment, Closea
     @DefinedBy(Api.ANNOTATION_PROCESSING)
     public SourceVersion getSourceVersion() {
         return Source.toSourceVersion(source);
+    }
+
+    // @DefinedBy(Api.ANNOTATION_PROCESSING)
+    public standalone.javax.lang.model.SourceVersion getSourceVersionStandalone() {
+        return Source.toSourceVersionStandalone(source);
     }
 
     @DefinedBy(Api.ANNOTATION_PROCESSING)

@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.lang.model.AnnotatedConstruct;
-import javax.lang.model.SourceVersion;
+import standalone.javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
@@ -725,12 +725,12 @@ public class JavacElements implements Elements {
         return (msym.flags() & Flags.AUTOMATIC_MODULE) != 0;
     }
 
-    @Override @DefinedBy(Api.LANGUAGE_MODEL)
+    /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
     public boolean isCompactConstructor(ExecutableElement e) {
         return (((MethodSymbol)e).flags() & Flags.COMPACT_RECORD_CONSTRUCTOR) != 0;
     }
 
-    @Override @DefinedBy(Api.LANGUAGE_MODEL)
+    /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
     public boolean isCanonicalConstructor(ExecutableElement e) {
         return (((MethodSymbol)e).flags() & Flags.RECORD) != 0;
     }
