@@ -23,7 +23,7 @@
  * questions.
  */
 
-package jdk.internal.misc;
+package standalone.jdk.internal.misc;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

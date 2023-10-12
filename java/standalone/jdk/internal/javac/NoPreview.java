@@ -22,7 +22,7 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package jdk.internal.javac;
+package standalone.jdk.internal.javac;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

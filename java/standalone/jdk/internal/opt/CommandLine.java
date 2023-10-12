@@ -23,7 +23,7 @@
  * questions.
  */
 
-package jdk.internal.opt;
+package standalone.jdk.internal.opt;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ import java.util.List;
 
 /*
  * This file was originally a copy of CommandLine.java in
- * com.sun.tools.javac.main -- and it will be the last.
+ * standalone.com.sun.tools.javac.main -- and it will be the last.
  *
  * Find details at https://bugs.openjdk.org/browse/JDK-8236919
  */

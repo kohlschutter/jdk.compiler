@@ -22,34 +22,18 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package jdk.internal.misc;
+package standalone.jdk.internal.javac;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Defines static methods to test if preview features are enabled at run-time.
+ * Indicates, when declared on a module declaration, that the module participates
+ * in preview features and therefore does not need to be compiled with "--enable-preview".
  */
-public class PreviewFeatures {
-    private static final boolean ENABLED = isPreviewEnabled();
-
-    private PreviewFeatures() {
-    }
-
-    /**
-     * {@return true if preview features are enabled, otherwise false}
-     */
-    public static boolean isEnabled() {
-        return ENABLED;
-    }
-
-    /**
-     * Ensures that preview features are enabled.
-     * @throws UnsupportedOperationException if preview features are not enabled
-     */
-    public static void ensureEnabled() {
-        if (!isEnabled()) {
-            throw new UnsupportedOperationException(
-                "Preview Features not enabled, need to run with --enable-preview");
-        }
-    }
-
-    private static native boolean isPreviewEnabled();
+@Target(ElementType.MODULE)
+@Retention(RetentionPolicy.CLASS)
+public @interface ParticipatesInPreview {
 }

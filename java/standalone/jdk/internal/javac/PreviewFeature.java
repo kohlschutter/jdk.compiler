@@ -23,7 +23,7 @@
  * questions.
  */
 
-package jdk.internal.javac;
+package standalone.jdk.internal.javac;
 
 import java.lang.annotation.*;
 
