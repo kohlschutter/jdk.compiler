@@ -31,7 +31,7 @@ import javax.tools.StandardLocation;
  * {@linkplain javax.tools.ToolProvider#getSystemJavaCompiler system Java compiler}
  * and its command line equivalent, <em>{@index javac javac tool}</em>.
  *
- * <p>The {@code com.sun.source.*} packages provide the {@index "Compiler Tree API"}:
+ * <p>The {@code standalone.com.sun.source.*} packages provide the {@index "Compiler Tree API"}:
  * an API for accessing the abstract trees (ASTs) representing Java source code
  * and documentation comments, used by <em>javac</em>, <em>javadoc</em> and related tools.
  *
@@ -52,9 +52,9 @@ import javax.tools.StandardLocation;
  * <p>
  * In addition, instances of {@link javax.tools.JavaCompiler.CompilationTask}
  * obtained from {@linkplain javax.tools.JavaCompiler JavaCompiler} can be
- * downcast to {@link com.sun.source.util.JavacTask JavacTask} for access to
+ * downcast to {@link standalone.com.sun.source.util.JavacTask JavacTask} for access to
  * lower level aspects of <em>javac</em>, such as the
- * {@link com.sun.source.tree Abstract Syntax Tree} (AST).</p>
+ * {@link standalone.com.sun.source.tree Abstract Syntax Tree} (AST).</p>
  *
  * <p>This module uses the {@link java.nio.file.spi.FileSystemProvider
  * FileSystemProvider} API to locate file system providers. In particular,
@@ -76,7 +76,7 @@ import javax.tools.StandardLocation;
  *          is used when invoking the tool through the {@code JavaCompiler} API;
  *          an error will be reported if the option is used when invoking
  *          <em>javac</em> through the {@link java.util.spi.ToolProvider ToolProvider}
- *          or legacy {@link com.sun.tools.javac.Main Main} API.
+ *          or legacy {@link standalone.com.sun.tools.javac.Main Main} API.
  *
  *     <li><p>The "classpath wildcard" feature is not supported.
  *          The feature is only supported by the native launcher.
@@ -204,58 +204,58 @@ import javax.tools.StandardLocation;
  *     Use {@link java.util.spi.ToolProvider#findFirst ToolProvider.findFirst("javac")}
  *     to obtain an instance of a {@code ToolProvider} that provides the equivalent
  *     of command-line access to the {@code javac} tool.
- * @provides com.sun.tools.javac.platform.PlatformProvider
+ * @provides standalone.com.sun.tools.javac.platform.PlatformProvider
  * @provides javax.tools.JavaCompiler
  * @provides javax.tools.Tool
  *
  * @uses javax.annotation.processing.Processor
- * @uses com.sun.source.util.Plugin
- * @uses com.sun.tools.javac.platform.PlatformProvider
+ * @uses standalone.com.sun.source.util.Plugin
+ * @uses standalone.com.sun.tools.javac.platform.PlatformProvider
  *
  * @moduleGraph
  * @since 9
  */
 module standalone.jdk.compiler {
     requires transitive java.compiler;
-    requires jdk.internal.opt;
+    requires standalone.jdk.internal.opt;
     requires jdk.zipfs;
 
-    exports com.sun.source.doctree;
-    exports com.sun.source.tree;
-    exports com.sun.source.util;
-    exports com.sun.tools.javac;
+    exports standalone.com.sun.source.doctree;
+    exports standalone.com.sun.source.tree;
+    exports standalone.com.sun.source.util;
+    exports standalone.com.sun.tools.javac;
 
-    exports com.sun.tools.doclint;
-    exports com.sun.tools.javac.api;
-    exports com.sun.tools.javac.resources;
-    exports com.sun.tools.javac.code;
-    exports com.sun.tools.javac.comp;
-    exports com.sun.tools.javac.file;
-    exports com.sun.tools.javac.jvm;
-    exports com.sun.tools.javac.main;
-    exports com.sun.tools.javac.model;
-    exports com.sun.tools.javac.parser;
-    exports com.sun.tools.javac.platform;
-    exports com.sun.tools.javac.tree;
-    exports com.sun.tools.javac.util;
+    exports standalone.com.sun.tools.doclint;
+    exports standalone.com.sun.tools.javac.api;
+    exports standalone.com.sun.tools.javac.resources;
+    exports standalone.com.sun.tools.javac.code;
+    exports standalone.com.sun.tools.javac.comp;
+    exports standalone.com.sun.tools.javac.file;
+    exports standalone.com.sun.tools.javac.jvm;
+    exports standalone.com.sun.tools.javac.main;
+    exports standalone.com.sun.tools.javac.model;
+    exports standalone.com.sun.tools.javac.parser;
+    exports standalone.com.sun.tools.javac.platform;
+    exports standalone.com.sun.tools.javac.tree;
+    exports standalone.com.sun.tools.javac.util;
 
     uses javax.annotation.processing.Processor;
-    uses com.sun.source.util.Plugin;
-    uses com.sun.tools.doclint.DocLint;
-    uses com.sun.tools.javac.platform.PlatformProvider;
+    uses standalone.com.sun.source.util.Plugin;
+    uses standalone.com.sun.tools.doclint.DocLint;
+    uses standalone.com.sun.tools.javac.platform.PlatformProvider;
 
     requires com.kohlschutter.jdk.standaloneutil;
 
     provides java.util.spi.ToolProvider with
-        com.sun.tools.javac.main.JavacToolProvider;
+        standalone.com.sun.tools.javac.main.JavacToolProvider;
 
-    provides com.sun.tools.javac.platform.PlatformProvider with
-        com.sun.tools.javac.platform.JDKPlatformProvider;
+    provides standalone.com.sun.tools.javac.platform.PlatformProvider with
+        standalone.com.sun.tools.javac.platform.JDKPlatformProvider;
 
     provides javax.tools.JavaCompiler with
-        com.sun.tools.javac.api.JavacTool;
+        standalone.com.sun.tools.javac.api.JavacTool;
 
     provides javax.tools.Tool with
-        com.sun.tools.javac.api.JavacTool;
+        standalone.com.sun.tools.javac.api.JavacTool;
 }
 
