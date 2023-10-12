@@ -960,7 +960,7 @@ public class JavacFileManager extends BaseFileManager implements StandardJavaFil
         return result;
     }
 
-    @Override @DefinedBy(Api.COMPILER)
+    /*@Override*/ @DefinedBy(Api.COMPILER)
     public Iterable<? extends JavaFileObject> getJavaFileObjectsFromPaths(Collection<? extends Path> paths) {
         ArrayList<PathFileObject> result;
         if (paths != null) {

@@ -461,7 +461,7 @@ public class ClientCodeWrapper {
             }
         }
 
-        @Override @DefinedBy(Api.COMPILER)
+        /*@Override*/ @DefinedBy(Api.COMPILER)
         public Iterable<? extends JavaFileObject> getJavaFileObjectsFromPaths(Collection<? extends Path> paths) {
             try {
                 return ((StandardJavaFileManager)clientJavaFileManager).getJavaFileObjectsFromPaths(paths);

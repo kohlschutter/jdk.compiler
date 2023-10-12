@@ -216,7 +216,7 @@ public class DelegatingJavaFileManager implements JavaFileManagerShim {
             return baseSJFM.getJavaFileObjectsFromFiles(files);
         }
 
-        @Override
+        /*@Override*/
         public Iterable<? extends JavaFileObject> getJavaFileObjectsFromPaths
                                                   (Collection<? extends Path> paths) {
             return baseSJFM.getJavaFileObjectsFromPaths(paths);

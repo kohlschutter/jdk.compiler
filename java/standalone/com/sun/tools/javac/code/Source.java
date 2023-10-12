@@ -315,7 +315,7 @@ public enum Source {
         case JDK10  : return RELEASE_10;
         case JDK11  : return RELEASE_11;
         case JDK12  : return RELEASE_12;
-        case JDK13  : return RELEASE_13;
+        case JDK13  : return SourceVersion.valueOf("RELEASE_13");
         case JDK14  : return SourceVersion.valueOf("RELEASE_14");
         case JDK15  : return SourceVersion.valueOf("RELEASE_15");
         case JDK16  : return SourceVersion.valueOf("RELEASE_16");
