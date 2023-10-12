@@ -51,5 +51,15 @@ public class PreviewFeatures {
         }
     }
 
-    private static native boolean isPreviewEnabled();
+    private static boolean isPreviewEnabled() {
+      String[] jvmArgs = ProcessHandle.current().info().arguments().orElse(new String[0]);
+      for (String arg : jvmArgs) {
+        if ("--enable-preview".equals(arg)) {
+          return true;
+        } else if (!arg.startsWith("-") || "--".equals(arg)) {
+          break;
+        }
+      }
+      return false;
+    }
 }
