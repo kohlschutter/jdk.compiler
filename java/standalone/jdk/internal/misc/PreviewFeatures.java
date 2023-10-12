@@ -29,6 +29,7 @@ package standalone.jdk.internal.misc;
  */
 public class PreviewFeatures {
     private static final boolean ENABLED = isPreviewEnabled();
+    private static boolean FORCE_ENABLED = false;
 
     private PreviewFeatures() {
     }
@@ -37,7 +38,7 @@ public class PreviewFeatures {
      * {@return true if preview features are enabled, otherwise false}
      */
     public static boolean isEnabled() {
-        return ENABLED;
+        return ENABLED || FORCE_ENABLED;
     }
 
     /**
@@ -51,7 +52,15 @@ public class PreviewFeatures {
         }
     }
 
+    public static void setForceEnabled(boolean enabled) {
+      FORCE_ENABLED = enabled;
+    }
+
     private static boolean isPreviewEnabled() {
+      if ("true".equals(System.getProperty("standalone.jdk.compiler.force.enable-preview", ""))) {
+        return true;
+      }
+
       String[] jvmArgs = ProcessHandle.current().info().arguments().orElse(new String[0]);
       for (String arg : jvmArgs) {
         if ("--enable-preview".equals(arg)) {
