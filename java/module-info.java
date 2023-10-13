@@ -91,12 +91,31 @@ module standalone.jdk.compiler {
     exports standalone.com.sun.tools.javac.jvm;
     exports standalone.com.sun.tools.javac.main;
     exports standalone.com.sun.tools.javac.model;
-    opens standalone.com.sun.tools.javac.model;
     exports standalone.com.sun.tools.javac.parser;
     exports standalone.com.sun.tools.javac.platform;
     exports standalone.com.sun.tools.javac.tree;
     exports standalone.com.sun.tools.javac.util;
     exports standalone.jdk.internal.shellsupport.doc;
+
+    opens standalone.com.sun.source.doctree;
+    opens standalone.com.sun.source.tree;
+    opens standalone.com.sun.source.util;
+    opens standalone.com.sun.tools.javac;
+
+    opens standalone.com.sun.tools.doclint;
+    opens standalone.com.sun.tools.javac.api;
+    opens standalone.com.sun.tools.javac.resources;
+    opens standalone.com.sun.tools.javac.code;
+    opens standalone.com.sun.tools.javac.comp;
+    opens standalone.com.sun.tools.javac.file;
+    opens standalone.com.sun.tools.javac.jvm;
+    opens standalone.com.sun.tools.javac.main;
+    opens standalone.com.sun.tools.javac.model;
+    opens standalone.com.sun.tools.javac.parser;
+    opens standalone.com.sun.tools.javac.platform;
+    opens standalone.com.sun.tools.javac.tree;
+    opens standalone.com.sun.tools.javac.util;
+    opens standalone.jdk.internal.shellsupport.doc;
 
     uses javax.annotation.processing.Processor;
     uses standalone.com.sun.source.util.Plugin;
