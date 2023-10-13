@@ -5,7 +5,7 @@ public final class javac_de extends java.util.ListResourceBundle {
         return new Object[][] {
             { "javac.description", "Java-Klasse und Schnittstellendefinitionen lesen und in Bytecode und Klassendateien kompilieren" },
             { "javac.fullVersion", "{0} Vollversion \"{1}\"" },
-            { "javac.msg.bug", "Im Compiler ({0}) ist eine Ausnahme aufgetreten. Erstellen Sie auf der Java-Seite zum Melden von Bugs (https://bugreport.java.com) einen Bugbericht, nachdem Sie die Bugdatenbank (https://bugs.java.com) auf Duplikate gepr\u00FCft haben. Geben Sie in Ihrem Bericht Ihr Programm, die folgende Diagnose und die Parameter an, die Sie dem Java-Compiler \u00FCbergeben haben. Vielen Dank." },
+            { "javac.msg.bug", "Im Compiler ({0}) ist eine Ausnahme aufgetreten. Erstellen Sie auf der Java-Seite zum Melden von Bugs (https://github.com/kohlschutter/jdk.compiler.standalone/issues) einen Bugbericht, nachdem Sie die Bugdatenbank (https://github.com/kohlschutter/jdk.compiler.standalone/issues) auf Duplikate gepr\u00FCft haben. Geben Sie in Ihrem Bericht Ihr Programm, die folgende Diagnose und die Parameter an, die Sie dem Java-Compiler \u00FCbergeben haben. Vielen Dank." },
             { "javac.msg.io", "\n\nEin Eingabe-/Ausgabefehler ist aufgetreten.\nDetails finden Sie im folgenden Stacktrace.\n" },
             { "javac.msg.parameters.output", "Ausgabe von javac-Parametern an: {0}" },
             { "javac.msg.parameters.output.error", "Fehler beim Versuch, javac-Parameter auszugeben an: {0}. Die Parameter folgen:" },
