@@ -31,7 +31,7 @@ public abstract class AbstractProcessorShim extends AbstractProcessor {
                                                        "found on " + this.getClass().getName() +
                                                        ", returning " + sv + ".");
       } else {
-          sv = SourceVersion .values()[ssv.value().ordinal()];
+          sv = SourceVersion.valueOf(ssv.value().name());
       }
       return sv;
   }
