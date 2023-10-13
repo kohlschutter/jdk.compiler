@@ -2643,7 +2643,7 @@ public class ClassReader {
         Assert.check(methodCount == nextChar());
         for (int i = 0; i < methodCount; i++) enterMember(c, readMethod());
         if (c.isRecord()) {
-            for (RecordComponent rc: c.getRecordComponents()) {
+            for (RecordComponent rc: c.getRecordComponentsStandalone()) {
                 rc.accessor = lookupMethod(c, rc.name, List.nil());
             }
         }

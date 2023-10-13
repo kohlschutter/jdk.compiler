@@ -308,7 +308,7 @@ public class TransPatterns extends TreeTranslator {
         JCVariableDecl recordBindingVar = make.at(recordPattern.pos()).VarDef(tempBind, null);
 
         VarSymbol recordBinding = recordBindingVar.sym;
-        List<? extends RecordComponent> components = recordPattern.record.getRecordComponents();
+        List<? extends RecordComponent> components = recordPattern.record.getRecordComponentsStandalone();
         List<? extends Type> nestedFullComponentTypes = recordPattern.fullComponentTypes;
         List<? extends JCPattern> nestedPatterns = recordPattern.nested;
         JCExpression firstLevelChecks = null;

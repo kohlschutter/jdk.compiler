@@ -1047,7 +1047,7 @@ public class Attr extends JCTree.Visitor {
 
             if (env.enclClass.sym.isRecord() && tree.sym.owner.kind == TYP) {
                 // lets find if this method is an accessor
-                Optional<? extends RecordComponent> recordComponent = env.enclClass.sym.getRecordComponents().stream()
+                Optional<? extends RecordComponent> recordComponent = env.enclClass.sym.getRecordComponentsStandalone().stream()
                         .filter(rc -> rc.accessor == tree.sym && (rc.accessor.flags_field & GENERATED_MEMBER) == 0).findFirst();
                 if (recordComponent.isPresent()) {
                     // the method is a user defined accessor lets check that everything is fine
@@ -4245,7 +4245,7 @@ public class Attr extends JCTree.Visitor {
         List<Type> expectedRecordTypes;
         if (site.tsym.kind == Kind.TYP && ((ClassSymbol) site.tsym).isRecord()) {
             ClassSymbol record = (ClassSymbol) site.tsym;
-            expectedRecordTypes = record.getRecordComponents()
+            expectedRecordTypes = record.getRecordComponentsStandalone()
                                         .stream()
                                         .map(rc -> types.memberType(site, rc))
                                         .map(t -> types.upward(t, types.captures(t)).baseType())

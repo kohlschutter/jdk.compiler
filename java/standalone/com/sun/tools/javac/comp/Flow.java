@@ -964,7 +964,7 @@ public class Flow {
                             .collect(groupingBy(pd -> (ClassSymbol) pd.recordType.tsym));
 
             for (var e : groupByRecordClass.entrySet()) {
-                int nestedPatternsCount = e.getKey().getRecordComponents().size();
+                int nestedPatternsCount = e.getKey().getRecordComponentsStandalone().size();
                 Set<RecordPattern> current = new HashSet<>(e.getValue());
 
                 for (int mismatchingCandidate = 0;
@@ -3479,7 +3479,7 @@ public class Flow {
             Type[] componentTypes;
 
             if (!record.type.isErroneous()) {
-                componentTypes = ((ClassSymbol) record.type.tsym).getRecordComponents()
+                componentTypes = ((ClassSymbol) record.type.tsym).getRecordComponentsStandalone()
                         .map(r -> types.memberType(record.type, r))
                         .toArray(s -> new Type[s]);
             }

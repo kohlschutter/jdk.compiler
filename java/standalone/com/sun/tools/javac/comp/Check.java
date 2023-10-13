@@ -2160,7 +2160,7 @@ public class Check {
         }
         if (allowRecords && origin.isRecord()) {
             // let's find out if this is a user defined accessor in which case the @Override annotation is acceptable
-            Optional<? extends RecordComponent> recordComponent = origin.getRecordComponents().stream()
+            Optional<? extends RecordComponent> recordComponent = origin.getRecordComponentsStandalone().stream()
                     .filter(rc -> rc.accessor == tree.sym && (rc.accessor.flags_field & GENERATED_MEMBER) == 0).findFirst();
             if (recordComponent.isPresent()) {
                 return;

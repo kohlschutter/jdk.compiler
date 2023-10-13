@@ -2387,7 +2387,7 @@ public class Lower extends TreeTranslator {
 
     List<JCTree> generateMandatedAccessors(JCClassDecl tree) {
         List<JCVariableDecl> fields = TreeInfo.recordFields(tree);
-        return tree.sym.getRecordComponents().stream()
+        return tree.sym.getRecordComponentsStandalone().stream()
                 .filter(rc -> (rc.accessor.flags() & Flags.GENERATED_MEMBER) != 0)
                 .map(rc -> {
                     // we need to return the field not the record component

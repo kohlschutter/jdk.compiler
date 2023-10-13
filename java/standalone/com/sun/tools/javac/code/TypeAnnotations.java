@@ -1115,7 +1115,7 @@ public class TypeAnnotations {
             }
             scan(tree.defs);
             if (tree.sym.isRecord()) {
-                tree.sym.getRecordComponents().forEach(rc -> scan(rc.accessorMeth));
+                tree.sym.getRecordComponentsStandalone().forEach(rc -> scan(rc.accessorMeth));
             }
         }
 

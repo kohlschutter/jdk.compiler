@@ -1423,7 +1423,7 @@ public class TypeEnter implements Completer {
         RecordConstructorHelper(ClassSymbol owner, List<JCVariableDecl> recordFieldDecls) {
             super(owner);
             this.recordFieldDecls = recordFieldDecls;
-            this.lastIsVarargs = owner.getRecordComponents().stream().anyMatch(rc -> rc.isVarargs());
+            this.lastIsVarargs = owner.getRecordComponentsStandalone().stream().anyMatch(rc -> rc.isVarargs());
         }
 
         @Override

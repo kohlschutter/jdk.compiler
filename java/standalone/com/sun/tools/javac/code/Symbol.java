@@ -1595,10 +1595,18 @@ public abstract class Symbol extends AnnoConstruct implements PoolConstant, Elem
             return rc;
         }
 
+        /**
+         * @Deprecated
+         * @see #getRecordComponentsStandalone()
+         */
         /*@Override*/ @DefinedBy(Api.LANGUAGE_MODEL)
-        public List<? extends RecordComponent> getRecordComponents() {
-            return recordComponents;
+        @Deprecated
+        public List getRecordComponents() {
+            return getRecordComponentsStandalone();
         }
+        public List<? extends RecordComponent> getRecordComponentsStandalone() {
+          return recordComponents;
+      }
 
         public void setRecordComponents(List<RecordComponent> recordComponents) {
             this.recordComponents = recordComponents;

@@ -231,7 +231,8 @@ public class JRTIndex {
     }
 
     public boolean isInJRT(FileObject fo) {
-        if (fo instanceof PathFileObject pathFileObject) {
+        if (fo instanceof PathFileObject) {
+          PathFileObject pathFileObject  = (PathFileObject)fo;
             Path path = pathFileObject.getPath();
             return (path.getFileSystem() == jrtfs);
         } else {

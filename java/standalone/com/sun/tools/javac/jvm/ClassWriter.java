@@ -855,8 +855,8 @@ public class ClassWriter extends ClassFile {
     int writeRecordAttribute(ClassSymbol csym) {
         int alenIdx = writeAttr(names.Record);
         Scope s = csym.members();
-        databuf.appendChar(csym.getRecordComponents().size());
-        for (VarSymbol v: csym.getRecordComponents()) {
+        databuf.appendChar(csym.getRecordComponentsStandalone().size());
+        for (VarSymbol v: csym.getRecordComponentsStandalone()) {
             //databuf.appendChar(poolWriter.putMember(v.accessor.head.snd));
             databuf.appendChar(poolWriter.putName(v.name));
             databuf.appendChar(poolWriter.putDescriptor(v));
