@@ -269,8 +269,7 @@ public class JDKPlatformProvider implements PlatformProvider {
                                 if (Files.isRegularFile(systemModules)) {
                                     fm.handleOption("--system", Arrays.asList("none").iterator());
 
-                                    Path jrtModules = JavaHomeLocator.getCompilerJrtFS()
-                                                       .getPath("modules");
+                                    Path jrtModules = JavaHomeLocator.getPathToModules();
                                     try (Stream<String> lines =
                                             Files.lines(systemModules, utf8)) {
                                         lines.map(line -> jrtModules.resolve(line))
