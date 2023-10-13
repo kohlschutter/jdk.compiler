@@ -4,7 +4,7 @@ public final class javac extends java.util.ListResourceBundle {
     protected final Object[][] getContents() {
         return new Object[][] {
             { "javac.fullVersion", "{0} full version \"{1}\"" },
-            { "javac.msg.bug", "An exception has occurred in the compiler ({0}). Please file a bug against the Java compiler via the Java bug reporting page (https://bugreport.java.com) after checking the Bug Database (https://bugs.java.com) for duplicates. Include your program and the following diagnostic in your report. Thank you." },
+            { "javac.msg.bug", "An exception has occurred in the compiler ({0}). Please file a bug against the Java compiler via the Java bug reporting page (https://github.com/kohlschutter/jdk.compiler.standalone/issues) after checking the Bug Database (https://github.com/kohlschutter/jdk.compiler.standalone/issues) for duplicates. Include your program and the following diagnostic in your report. Thank you." },
             { "javac.msg.io", "\n\nAn input/output error occurred.\nConsult the following stack trace for details.\n" },
             { "javac.msg.plugin.uncaught.exception", "\n\nA plugin threw an uncaught exception.\nConsult the following stack trace for details.\n" },
             { "javac.msg.proc.annotation.uncaught.exception", "\n\nAn annotation processor threw an uncaught exception.\nConsult the following stack trace for details.\n" },
