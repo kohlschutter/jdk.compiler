@@ -288,8 +288,7 @@ public class JDKPlatformProvider implements PlatformProvider {
                         fm.handleOption("--system", Arrays.asList("none").iterator());
 
                         Path jrtModules =
-                                JavaHomeLocator.getCompilerJrtFS()
-                                           .getPath("modules");
+                                JavaHomeLocator.getPathToModules();
                         try (Stream<String> lines =
                                 Files.lines(systemModules, UTF_8)) {
                             lines.map(line -> jrtModules.resolve(line))
