@@ -82,19 +82,16 @@ public class JRTIndex {
     }
 
     public static boolean isAvailable() {
-        try {
-            JavaHomeLocator.getCompilerJrtFS();
-            return true;
-        } catch (ProviderNotFoundException | FileSystemNotFoundException e) {
-            return false;
-        }
+          return true;
     }
 
 
     /**
      * The jrt: file system.
      */
-    private final FileSystem jrtfs;
+//    private final FileSystem jrtfs;
+    private final Path jrtfsRoot;
+    private final String jrtfsRootString;
 
     /**
      * A lazily evaluated set of entries about the contents of the jrt: file system.
@@ -179,7 +176,8 @@ public class JRTIndex {
      * Create and initialize the index.
      */
     private JRTIndex() throws IOException {
-        jrtfs = JavaHomeLocator.getCompilerJrtFS();
+        jrtfsRoot = JavaHomeLocator.getPathToModules();
+        jrtfsRootString = jrtfsRoot.toString()+"/";
         entries = new HashMap<>();
     }
 
@@ -195,9 +193,9 @@ public class JRTIndex {
             Set<RelativeDirectory> subdirs = new LinkedHashSet<>();
             Path dir;
             if (rd.path.isEmpty()) {
-                dir = jrtfs.getPath("/modules");
+                dir = jrtfsRoot.resolve("modules");
             } else {
-                Path pkgs = jrtfs.getPath("/packages");
+                Path pkgs = jrtfsRoot.resolve("packages");
                 dir = pkgs.resolve(rd.getPath().replaceAll("/$", "").replace("/", "."));
             }
             if (Files.exists(dir)) {
@@ -234,7 +232,7 @@ public class JRTIndex {
         if (fo instanceof PathFileObject) {
           PathFileObject pathFileObject  = (PathFileObject)fo;
             Path path = pathFileObject.getPath();
-            return (path.getFileSystem() == jrtfs);
+            return path.toAbsolutePath().toString().startsWith(jrtfsRootString);
         } else {
             return false;
         }

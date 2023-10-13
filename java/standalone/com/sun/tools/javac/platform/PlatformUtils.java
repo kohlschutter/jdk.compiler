@@ -25,10 +25,8 @@
 
 package standalone.com.sun.tools.javac.platform;
 
-import standalone.com.sun.tools.javac.main.Arguments;
-import standalone.com.sun.tools.javac.platform.PlatformProvider.PlatformNotSupported;
+import java.util.List;
 import java.util.Optional;
-import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
 
 /** Internal utilities to work with PlatformDescriptions.
@@ -46,10 +44,8 @@ public class PlatformUtils {
                 separator != (-1) ? platformString.substring(0, separator) : platformString;
         String platformOptions =
                 separator != (-1) ? platformString.substring(separator + 1) : "";
-        Iterable<PlatformProvider> providers =
-                ServiceLoader.load(PlatformProvider.class, Arguments.class.getClassLoader());
 
-        return StreamSupport.stream(providers.spliterator(), false)
+        return StreamSupport.stream(List.of(new JDKPlatformProvider()).spliterator(), false)
                             .filter(provider -> StreamSupport.stream(provider.getSupportedPlatformNames()
                                                                              .spliterator(),
                                                                      false)
@@ -58,7 +54,7 @@ public class PlatformUtils {
                             .flatMap(provider -> {
                                 try {
                                     return Optional.of(provider.getPlatform(platformProviderName, platformOptions));
-                                } catch (PlatformNotSupported pns) {
+                                } catch (RuntimeException pns) {
                                     return Optional.empty();
                                 }
                             })

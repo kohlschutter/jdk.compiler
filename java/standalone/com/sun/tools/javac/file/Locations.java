@@ -1957,37 +1957,9 @@ public class Locations {
             }
 
             if (modules == null) {
-                try {
-                    URI jrtURI = URI.create("jrt:/");
-                    FileSystem jrtfs;
-
-                    if (isCurrentPlatform(systemJavaHome)) {
-                        jrtfs = JavaHomeLocator.getCompilerJrtFS();
-                    } else {
-                        try {
-                            Map<String, String> attrMap =
-                                    Collections.singletonMap("java.home", systemJavaHome.toString());
-                            jrtfs = FileSystems.newFileSystem(jrtURI, attrMap);
-                        } catch (ProviderNotFoundException ex) {
-                            URL javaHomeURL = systemJavaHome.resolve("jrt-fs.jar").toUri().toURL();
-                            ClassLoader currentLoader = Locations.class.getClassLoader();
-                            URLClassLoader fsLoader =
-                                    new URLClassLoader(new URL[] {javaHomeURL}, currentLoader);
-
-                            jrtfs = FileSystems.newFileSystem(jrtURI, Collections.emptyMap(), fsLoader);
-
-                            closeables.add(fsLoader);
-                        }
-
-                        closeables.add(jrtfs);
-                    }
-
-                    modules = jrtfs.getPath("/modules");
-                } catch (FileSystemNotFoundException | ProviderNotFoundException e) {
                     modules = systemJavaHome.resolve("modules");
                     if (!Files.exists(modules))
-                        throw new IOException("can't find system classes", e);
-                }
+                        throw new IOException("can't find system classes");
             }
 
             moduleTable = new ModuleTable();
