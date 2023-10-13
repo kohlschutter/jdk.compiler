@@ -31,7 +31,7 @@ import standalone.com.sun.tools.javac.resources.CompilerProperties.Errors;
 import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.JCDiagnostic.DiagnosticPosition;
 
-import java.util.function.ToIntBiFunction;
+import standalone.java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 
 import static standalone.com.sun.tools.javac.code.TypeTag.BOT;

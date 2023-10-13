@@ -249,8 +249,8 @@ public class AnnotationProxyMaker {
         }
 
         public void visitError(Attribute.Error e) {
-            if (e instanceof Attribute.UnresolvedClass unresolvedClass)
-                value = new MirroredTypeExceptionProxy(unresolvedClass.classType);
+            if (e instanceof Attribute.UnresolvedClass)
+                value = new MirroredTypeExceptionProxy(((Attribute.UnresolvedClass)e).classType);
             else
                 value = null;       // indicates a type mismatch
         }
@@ -305,8 +305,8 @@ public class AnnotationProxyMaker {
 
         public boolean equals(Object obj) {
             return type != null &&
-                   obj instanceof MirroredTypeExceptionProxy proxy &&
-                   type.equals(proxy.type);
+                   obj instanceof MirroredTypeExceptionProxy &&
+                   type.equals(((MirroredTypeExceptionProxy)obj).type);
         }
 
         protected RuntimeException generateException() {
@@ -350,8 +350,8 @@ public class AnnotationProxyMaker {
 
         public boolean equals(Object obj) {
             return types != null &&
-                   obj instanceof MirroredTypesExceptionProxy proxy &&
-                   types.equals(proxy.types);
+                   obj instanceof MirroredTypesExceptionProxy &&
+                   types.equals(((MirroredTypesExceptionProxy)obj).types);
         }
 
         protected RuntimeException generateException() {

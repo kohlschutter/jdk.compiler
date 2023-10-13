@@ -60,6 +60,7 @@ import standalone.com.sun.tools.javac.tree.JCTree;
 import standalone.com.sun.tools.javac.util.Context;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
+import standalone.java.util.stream.StreamShim;
 import standalone.com.sun.tools.javac.util.List;
 import standalone.com.sun.tools.javac.util.Log;
 import standalone.com.sun.tools.javac.util.ModuleHelper;
@@ -202,10 +203,10 @@ public class BasicJavacTask extends JavacTask {
 
         if (platformProvider != null) {
             for (PluginInfo<Plugin> pluginDesc : platformProvider.getPlugins()) {
-                java.util.List<String> options =
+                java.util.List<String> options = StreamShim.toList(
                         pluginDesc.getOptions().entrySet().stream()
                                 .map(e -> e.getKey() + "=" + e.getValue())
-                                .toList();
+                                );
                 try {
                     initPlugin(pluginDesc.getPlugin(), options.toArray(new String[options.size()]));
                 } catch (RuntimeException ex) {

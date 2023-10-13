@@ -244,8 +244,8 @@ public class AttrRecover {
                     break;
             }
             for (Object a : d.getArgs()) {
-                if (a instanceof JCDiagnostic diagnostic) {
-                    diags = diags.prepend(diagnostic);
+                if (a instanceof JCDiagnostic) {
+                    diags = diags.prepend(((JCDiagnostic)a));
                 }
             }
         }

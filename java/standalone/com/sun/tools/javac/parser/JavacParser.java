@@ -3999,8 +3999,8 @@ public class JavacParser implements Parser {
                     isUnnamedClass = true;
                 } else if (token.kind != EOF) {
                     JCTree def = typeDeclaration(mods, docComment);
-                    if (def instanceof JCExpressionStatement statement)
-                        def = statement.expr;
+                    if (def instanceof JCExpressionStatement)
+                        def = ((JCExpressionStatement)def).expr;
                     defs.append(def);
                 }
 

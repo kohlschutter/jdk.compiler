@@ -165,11 +165,11 @@ public class TypeAnnotations {
         }
 
         Attribute atValue = atTarget.member(names.value);
-        if (!(atValue instanceof Attribute.Array arrayVal)) {
+        if (!(atValue instanceof Attribute.Array)) {
             return null;
         }
 
-        List<Attribute> targets = arrayVal.getValue();
+        List<Attribute> targets = ((Attribute.Array)atValue).getValue();
         if (targets.stream().anyMatch(a -> !(a instanceof Attribute.Enum))) {
             return null;
         }

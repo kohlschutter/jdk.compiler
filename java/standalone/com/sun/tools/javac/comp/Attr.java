@@ -418,8 +418,9 @@ public class Attr extends JCTree.Visitor {
         } catch (BreakAttr b) {
             return b.env;
         } catch (AssertionError ae) {
-            if (ae.getCause() instanceof BreakAttr breakAttr) {
-                return breakAttr.env;
+          Throwable cause = ae.getCause();
+            if (cause instanceof BreakAttr) {
+                return ((BreakAttr)cause).env;
             } else {
                 throw ae;
             }
@@ -1520,8 +1521,9 @@ public class Attr extends JCTree.Visitor {
         }
 
         var searchEnv = env;
-        while (searchEnv.tree instanceof JCLabeledStatement labeled &&
-               labeled.body == introducingStatement) {
+        JCLabeledStatement labeled = null;
+        while (searchEnv.tree instanceof JCLabeledStatement &&
+               (labeled = (JCLabeledStatement)searchEnv.tree).body == introducingStatement) {
             if (breaksTo(env, labeled, labeled.body)) {
                 //breaking to an immediately enclosing labeled statement
                 return ;
@@ -1716,8 +1718,8 @@ public class Attr extends JCTree.Visitor {
                 MatchBindings guardBindings = null;
                 for (List<JCCaseLabel> labels = c.labels; labels.nonEmpty(); labels = labels.tail) {
                     JCCaseLabel label = labels.head;
-                    if (label instanceof JCConstantCaseLabel constLabel) {
-                        JCExpression expr = constLabel.expr;
+                    if (label instanceof JCConstantCaseLabel) {
+                        JCExpression expr = ((JCConstantCaseLabel)label).expr;
                         if (TreeInfo.isNull(expr)) {
                             preview.checkSourceLevel(expr.pos(), Feature.CASE_NULL);
                             if (hasNullPattern) {
@@ -1777,7 +1779,7 @@ public class Attr extends JCTree.Visitor {
                                 }
                             }
                         }
-                    } else if (label instanceof JCDefaultCaseLabel def) {
+                    } else if (label instanceof JCDefaultCaseLabel) {
                         if (hasDefault) {
                             log.error(label.pos(), Errors.DuplicateDefaultLabel);
                         } else if (hasUnconditionalPattern) {
@@ -1785,9 +1787,9 @@ public class Attr extends JCTree.Visitor {
                         }
                         hasDefault = true;
                         matchBindings = MatchBindingsComputer.EMPTY;
-                    } else if (label instanceof JCPatternCaseLabel patternlabel) {
+                    } else if (label instanceof JCPatternCaseLabel) {
                         //pattern
-                        JCPattern pat = patternlabel.pat;
+                        JCPattern pat = ((JCPatternCaseLabel)label).pat;
                         attribExpr(pat, switchEnv, seltype);
                         Type primaryType = TreeInfo.primaryPatternType(pat);
                         if (!primaryType.hasTag(TYPEVAR)) {

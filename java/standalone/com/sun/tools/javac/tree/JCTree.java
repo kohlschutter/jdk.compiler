@@ -1109,7 +1109,23 @@ public abstract class JCTree implements Tree, Cloneable, DiagnosticPosition {
             return BLOCK;
         }
 
-        public record PatternMatchingCatch(JCCatch handler, Set<JCMethodInvocation> calls2Handle) {}
+        public static final class PatternMatchingCatch {
+          private final JCCatch handler;
+          private final Set<JCMethodInvocation> calls2Handle;
+
+          public PatternMatchingCatch(JCCatch handler, Set<JCMethodInvocation> calls2Handle) {
+            this.handler = handler;
+            this.calls2Handle = calls2Handle;
+          }
+
+          public JCCatch handler() {
+            return handler;
+          }
+
+          public Set<JCMethodInvocation> calls2Handle() {
+            return calls2Handle;
+          }
+        }
     }
 
     /**
@@ -2242,7 +2258,7 @@ public abstract class JCTree implements Tree, Cloneable, DiagnosticPosition {
 
         @Override @DefinedBy(Api.COMPILER_TREE)
         public JCPattern getPattern() {
-            return pattern instanceof JCPattern jcPattern ? jcPattern : null;
+            return pattern instanceof JCPattern ? ((JCPattern)pattern) : null;
         }
 
         @DefinedBy(Api.COMPILER_TREE)

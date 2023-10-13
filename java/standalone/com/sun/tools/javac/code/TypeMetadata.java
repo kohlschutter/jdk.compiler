@@ -25,6 +25,7 @@
 
 package standalone.com.sun.tools.javac.code;
 
+import standalone.com.sun.tools.javac.code.Attribute.TypeCompound;
 import standalone.com.sun.tools.javac.util.List;
 import standalone.com.sun.tools.javac.util.ListBuffer;
 
@@ -55,19 +56,30 @@ public /*sealed*/ interface TypeMetadata {
      * the existing type (rather than creating a new one), as the type might already have been
      * saved inside other symbols.
      */
-    record Annotations(ListBuffer<Attribute.TypeCompound> annotationBuffer) implements TypeMetadata {
+    static class Annotations implements TypeMetadata {
+
+        private final ListBuffer<TypeCompound> annotationBuffer;
 
         Annotations() {
             this(new ListBuffer<>());
         }
+        
+        Annotations(ListBuffer<Attribute.TypeCompound> annotationBuffer) {
+          this.annotationBuffer = annotationBuffer;
+          
+        }
 
         Annotations(List<Attribute.TypeCompound> annotations) {
             this();
-            annotationBuffer.appendList(annotations);
+            annotationBuffer().appendList(annotations);
         }
 
         List<Attribute.TypeCompound> annotations() {
-            return annotationBuffer.toList();
+            return annotationBuffer().toList();
+        }
+
+        public ListBuffer<TypeCompound> annotationBuffer() {
+          return annotationBuffer;
         }
     }
 
@@ -75,5 +87,15 @@ public /*sealed*/ interface TypeMetadata {
      * A type metadata holding a constant value. This can be used to describe constant types,
      * such as the type of a string literal, or that of a numeric constant.
      */
-    record ConstantValue(Object value) implements TypeMetadata { }
+    static class ConstantValue implements TypeMetadata {
+      private final Object value;
+
+      ConstantValue(Object value) {
+        this.value = value;
+      }
+
+      public Object value() {
+        return value;
+      }
+    }
 }

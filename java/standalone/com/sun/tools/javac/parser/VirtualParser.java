@@ -102,7 +102,8 @@ public class VirtualParser extends JavacParser {
         private Token prevToken;
 
         public VirtualScanner(Lexer s) {
-            while (s instanceof VirtualScanner virtualScanner) {
+            while (s instanceof VirtualScanner) {
+              VirtualScanner virtualScanner = (VirtualScanner)s;
                 s = virtualScanner.S;
                 offset += virtualScanner.offset;
             }

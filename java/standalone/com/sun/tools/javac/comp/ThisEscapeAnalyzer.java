@@ -334,7 +334,8 @@ class ThisEscapeAnalyzer extends TreeScanner {
                     continue;
 
                 // Handle field initializers
-                if (defs.head instanceof JCVariableDecl vardef) {
+                if (defs.head instanceof JCVariableDecl) {
+                  JCVariableDecl vardef = (JCVariableDecl)(defs.head);
                     visitTopLevel(klass, () -> {
                         scan(vardef);
                         copyPendingWarning();
@@ -343,7 +344,8 @@ class ThisEscapeAnalyzer extends TreeScanner {
                 }
 
                 // Handle initialization blocks
-                if (defs.head instanceof JCBlock block) {
+                if (defs.head instanceof JCBlock) {
+                  JCBlock block = (JCBlock)(defs.head);
                     visitTopLevel(klass, () -> analyzeStatements(block.stats));
                     continue;
                 }
@@ -1466,10 +1468,37 @@ class ThisEscapeAnalyzer extends TreeScanner {
 // MethodInfo
 
     // Information about a constructor or method in the compilation unit
-    private record MethodInfo(
-        JCClassDecl declaringClass,     // the class declaring "declaration"
-        JCMethodDecl declaration,       // the method or constructor itself
-        boolean analyzable,             // it's a constructor that we should analyze
-        boolean invokable) {            // it may be safely "invoked" during analysis
+    private static final class MethodInfo {
+      private final JCClassDecl declaringClass;
+      private final JCMethodDecl declaration;
+      private final boolean analyzable;
+      private final boolean invokable;
+
+      MethodInfo(JCClassDecl declaringClass, // the class declaring "declaration"
+          JCMethodDecl declaration, // the method or constructor itself
+          boolean analyzable, // it's a constructor that we should analyze
+          boolean invokable)  // it may be safely "invoked" during analysis 
+      {
+        this.declaringClass = declaringClass;
+        this.declaration = declaration;
+        this.analyzable = analyzable;
+        this.invokable = invokable;
+      }
+
+      JCClassDecl declaringClass() {
+        return declaringClass;
+      }
+
+      JCMethodDecl declaration() {
+        return declaration;
+      }
+
+      boolean analyzable() {
+        return analyzable;
+      }
+
+      boolean invokable() {
+        return invokable;
+      }
     }
 }

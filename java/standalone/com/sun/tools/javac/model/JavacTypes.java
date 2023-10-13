@@ -40,6 +40,7 @@ import standalone.com.sun.tools.javac.code.*;
 import standalone.com.sun.tools.javac.code.Symbol.*;
 import standalone.com.sun.tools.javac.util.*;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
+import standalone.java.util.stream.StreamShim;
 
 import static standalone.com.sun.tools.javac.code.Kinds.Kind.*;
 
@@ -124,9 +125,9 @@ public class JavacTypes implements javax.lang.model.util.Types {
     public List<Type> directSupertypes(TypeMirror t) {
         validateTypeNotIn(t, EXEC_OR_PKG_OR_MOD);
         Type ty = (Type)t;
-        return types.directSupertypes(ty).stream()
+        return StreamShim.toList( types.directSupertypes(ty).stream()
                 .map(Type::stripMetadataIfNeeded)
-                .toList();
+                );
     }
 
     @DefinedBy(Api.LANGUAGE_MODEL)
@@ -332,8 +333,10 @@ public class JavacTypes implements javax.lang.model.util.Types {
                 || elem.getModifiers().contains(Modifier.PRIVATE))
             return Collections.emptySet();
 
-        if (!(elem instanceof MethodSymbol methodSymbol))
+        if (!(elem instanceof MethodSymbol))
             throw new IllegalArgumentException();
+        
+        MethodSymbol methodSymbol = (MethodSymbol)elem;
 
         ClassSymbol origin = (ClassSymbol) methodSymbol.owner;
 

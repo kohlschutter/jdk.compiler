@@ -750,12 +750,12 @@ public class Flow {
                     continue;
 
                 for (var l : c.labels) {
-                    if (l instanceof JCPatternCaseLabel patternLabel) {
+                    if (l instanceof JCPatternCaseLabel) {
                         for (Type component : components(selector.type)) {
-                            patternSet.add(makePatternDescription(component, patternLabel.pat));
+                            patternSet.add(makePatternDescription(component, ((JCPatternCaseLabel)l).pat));
                         }
-                    } else if (l instanceof JCConstantCaseLabel constantLabel) {
-                        Symbol s = TreeInfo.symbol(constantLabel.expr);
+                    } else if (l instanceof JCConstantCaseLabel) {
+                        Symbol s = TreeInfo.symbol(((JCConstantCaseLabel)l).expr);
                         if (s != null && s.isEnum()) {
                             enum2Constants.computeIfAbsent(s.owner, x -> {
                                 Set<Symbol> result = new HashSet<>();
@@ -798,8 +798,8 @@ public class Flow {
         private boolean checkCovered(Type seltype, Iterable<PatternDescription> patterns) {
             for (Type seltypeComponent : components(seltype)) {
                 for (PatternDescription pd : patterns) {
-                    if (pd instanceof BindingPattern bp &&
-                        types.isSubtype(seltypeComponent, types.erasure(bp.type))) {
+                    if (pd instanceof BindingPattern &&
+                        types.isSubtype(seltypeComponent, types.erasure(((BindingPattern)pd).type))) {
                         return true;
                     }
                 }
@@ -838,10 +838,10 @@ public class Flow {
                                                    .collect(Collectors.toSet());
 
             for (PatternDescription pdOne : patterns) {
-                if (pdOne instanceof BindingPattern bpOne) {
+                if (pdOne instanceof BindingPattern) {
                     Set<PatternDescription> toAdd = new HashSet<>();
 
-                    for (Type sup : types.directSupertypes(bpOne.type)) {
+                    for (Type sup : types.directSupertypes(((BindingPattern)pdOne).type)) {
                         ClassSymbol clazz = (ClassSymbol) sup.tsym;
 
                         clazz.complete();
@@ -870,7 +870,8 @@ public class Flow {
                             });
 
                             for (PatternDescription pdOther : patterns) {
-                                if (pdOther instanceof BindingPattern bpOther) {
+                                if (pdOther instanceof BindingPattern) {
+                                  BindingPattern bpOther = (BindingPattern)pdOther;
                                     Set<Symbol> currentPermittedSubTypes =
                                             allPermittedSubTypes((ClassSymbol) bpOther.type.tsym, s -> true);
 
@@ -1048,7 +1049,8 @@ public class Flow {
             var newPatterns = new HashSet<PatternDescription>();
             boolean modified = false;
             for (PatternDescription pd : patterns) {
-                if (pd instanceof RecordPattern rpOne) {
+                if (pd instanceof RecordPattern) {
+                  RecordPattern rpOne = (RecordPattern)pd;
                     PatternDescription reducedPattern = reduceRecordPattern(rpOne);
                     if (reducedPattern != rpOne) {
                         newPatterns.add(reducedPattern);
@@ -1062,7 +1064,8 @@ public class Flow {
         }
 
         private PatternDescription reduceRecordPattern(PatternDescription pattern) {
-            if (pattern instanceof RecordPattern rpOne) {
+            if (pattern instanceof RecordPattern) {
+              RecordPattern rpOne = (RecordPattern)pattern;
                 Type[] componentType = rpOne.fullComponentTypes();
                 //error recovery, ignore patterns with incorrect number of nested patterns:
                 if (componentType.length != rpOne.nested.length) {
@@ -1079,8 +1082,8 @@ public class Flow {
                         reducedNestedPatterns[i] = newNested;
                     }
 
-                    covered &= newNested instanceof BindingPattern bp &&
-                               types.isSubtype(types.erasure(componentType[i]), types.erasure(bp.type));
+                    covered &= newNested instanceof BindingPattern &&
+                               types.isSubtype(types.erasure(componentType[i]), types.erasure(((BindingPattern)newNested).type));
                 }
                 if (covered) {
                     return new BindingPattern(rpOne.recordType);
@@ -1100,7 +1103,7 @@ public class Flow {
 
             for (Iterator<PatternDescription> it = result.iterator(); it.hasNext();) {
                 PatternDescription pd = it.next();
-                if (pd instanceof RecordPattern rp && existingBindings.contains(rp.recordType.tsym)) {
+                if (pd instanceof RecordPattern && existingBindings.contains(((RecordPattern)pd).recordType.tsym)) {
                     it.remove();
                 }
             }
@@ -1112,10 +1115,10 @@ public class Flow {
             ListBuffer<PendingExit> prevPendingExits = pendingExits;
             pendingExits = new ListBuffer<>();
             for (JCTree resource : tree.resources) {
-                if (resource instanceof JCVariableDecl variableDecl) {
-                    visitVarDef(variableDecl);
-                } else if (resource instanceof JCExpression expression) {
-                    scan(expression);
+                if (resource instanceof JCVariableDecl) {
+                    visitVarDef((JCVariableDecl)resource);
+                } else if (resource instanceof JCExpression) {
+                    scan((JCExpression)resource);
                 } else {
                     throw new AssertionError(tree);  // parser error
                 }
@@ -1305,7 +1308,8 @@ public class Flow {
             for (PendingExit exit = pendingExits.next();
                  exit != null;
                  exit = pendingExits.next()) {
-                if (exit instanceof ThrownPendingExit thrownExit) {
+                if (exit instanceof ThrownPendingExit) {
+                  ThrownPendingExit thrownExit = (ThrownPendingExit)exit;
                     if (classDef != null &&
                         classDef.pos == exit.tree.pos) {
                         log.error(exit.tree.pos(),
@@ -1583,10 +1587,10 @@ public class Flow {
             ListBuffer<PendingExit> prevPendingExits = pendingExits;
             pendingExits = new ListBuffer<>();
             for (JCTree resource : tree.resources) {
-                if (resource instanceof JCVariableDecl variableDecl) {
-                    visitVarDef(variableDecl);
-                } else if (resource instanceof JCExpression expression) {
-                    scan(expression);
+                if (resource instanceof JCVariableDecl) {
+                    visitVarDef((JCVariableDecl)resource);
+                } else if (resource instanceof JCExpression) {
+                    scan((JCExpression)resource);
                 } else {
                     throw new AssertionError(tree);  // parser error
                 }
@@ -2783,12 +2787,13 @@ public class Flow {
             final Bits initsTry = new Bits(inits);
             uninitsTry.assign(uninits);
             for (JCTree resource : tree.resources) {
-                if (resource instanceof JCVariableDecl variableDecl) {
+                if (resource instanceof JCVariableDecl) {
+                  JCVariableDecl variableDecl = (JCVariableDecl)resource;
                     visitVarDef(variableDecl);
                     unrefdResources.enter(variableDecl.sym);
                     resourceVarDecls.append(variableDecl);
-                } else if (resource instanceof JCExpression expression) {
-                    scanExpr(expression);
+                } else if (resource instanceof JCExpression) {
+                    scanExpr((JCExpression)resource);
                 } else {
                     throw new AssertionError(tree);  // parser error
                 }
@@ -2845,7 +2850,8 @@ public class Flow {
                     // versus finally!
                     while (exits.nonEmpty()) {
                         PendingExit exit = exits.next();
-                        if (exit instanceof AssignPendingExit assignPendingExit) {
+                        if (exit instanceof AssignPendingExit) {
+                          AssignPendingExit assignPendingExit = (AssignPendingExit)exit;
                             assignPendingExit.exit_inits.orSet(inits);
                             assignPendingExit.exit_uninits.andSet(uninits);
                         }
@@ -3224,7 +3230,7 @@ public class Flow {
         }
 
         int getCurrentTreeStartPosition() {
-            return currentTree instanceof JCCase cse ? cse.guard.getStartPosition()
+            return currentTree instanceof JCCase ? ((JCCase)currentTree).guard.getStartPosition()
                                                      : currentTree.getStartPosition();
         }
 
@@ -3458,11 +3464,13 @@ public class Flow {
 
     /*sealed*/ interface PatternDescription { }
     public PatternDescription makePatternDescription(Type selectorType, JCPattern pattern) {
-        if (pattern instanceof JCBindingPattern binding) {
+        if (pattern instanceof JCBindingPattern) {
+          JCBindingPattern binding = (JCBindingPattern)pattern;
             Type type = types.isSubtype(selectorType, binding.type)
                     ? selectorType : binding.type;
             return new BindingPattern(type);
-        } else if (pattern instanceof JCRecordPattern record) {
+        } else if (pattern instanceof JCRecordPattern) {
+          JCRecordPattern record = (JCRecordPattern)pattern;
             Type[] componentTypes;
 
             if (!record.type.isErroneous()) {
@@ -3489,22 +3497,51 @@ public class Flow {
             throw Assert.error();
         }
     }
-    record BindingPattern(Type type) implements PatternDescription {
+    static final class BindingPattern implements PatternDescription {
+      private final Type type;
+      BindingPattern(Type type) {
+        this.type = type;
+      }
         @Override
         public int hashCode() {
             return type.tsym.hashCode();
         }
         @Override
         public boolean equals(Object o) {
-            return o instanceof BindingPattern other &&
-                    type.tsym == other.type.tsym;
+            return o instanceof BindingPattern &&
+                    type.tsym == ((BindingPattern)o).type.tsym;
         }
         @Override
         public String toString() {
             return type.tsym + " _";
         }
+        
+        public Type type() {
+          return type;
+        }
     }
-    record RecordPattern(Type recordType, int _hashCode, Type[] fullComponentTypes, PatternDescription... nested) implements PatternDescription {
+    static final class RecordPattern implements PatternDescription {
+      
+      private final Type recordType;
+      private final int _hashCode;
+      private final Type[] fullComponentTypes;
+      private final PatternDescription[] nested;
+      RecordPattern(Type recordType, int _hashCode, Type[] fullComponentTypes, PatternDescription... nested) {
+        this.recordType = recordType;
+        this._hashCode = _hashCode;
+        this.fullComponentTypes = fullComponentTypes;
+        this.nested = nested;
+      }
+      
+      public Type recordType() {
+        return recordType;
+      }
+      public Type[] fullComponentTypes() {
+        return fullComponentTypes;
+      }
+      public PatternDescription[] nested() {
+        return nested;
+      }
 
         public RecordPattern(Type recordType, Type[] fullComponentTypes, PatternDescription[] nested) {
             this(recordType, hashCode(-1, recordType, nested), fullComponentTypes, nested);
@@ -3517,9 +3554,9 @@ public class Flow {
 
         @Override
         public boolean equals(Object o) {
-            return o instanceof RecordPattern other &&
-                    recordType.tsym == other.recordType.tsym &&
-                    Arrays.equals(nested, other.nested);
+            return o instanceof RecordPattern &&
+                    recordType.tsym == ((RecordPattern)o).recordType.tsym &&
+                    Arrays.equals(nested, ((RecordPattern)o).nested);
         }
 
         public int hashCode(int excludeComponent) {
@@ -3542,5 +3579,7 @@ public class Flow {
                     .map(pd -> pd.toString())
                     .collect(Collectors.joining(", ")) + ")";
         }
+        
+        
     }
 }

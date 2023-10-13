@@ -91,6 +91,7 @@ import standalone.com.sun.tools.javac.util.Assert;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.Pair;
+import standalone.java.util.stream.StreamShim;
 
 /**Helper to find javadoc and resolve @inheritDoc.
  */
@@ -283,15 +284,15 @@ public abstract class JavadocHelper implements AutoCloseable {
                         if (element.getKind() == ElementKind.METHOD) {
                             ExecutableElement executableElement = (ExecutableElement) element;
                             List<String> parameters =
-                                    executableElement.getParameters()
+                                    StreamShim.toList(executableElement.getParameters()
                                                      .stream()
                                                      .map(param -> param.getSimpleName().toString())
-                                                     .toList();
+                                                     );
                             List<String> throwsList =
-                                    executableElement.getThrownTypes()
+                                    StreamShim.toList(executableElement.getThrownTypes()
                                                      .stream()
                                                      .map(TypeMirror::toString)
-                                                     .toList();
+                                                     );
                             Set<String> missingParams = new HashSet<>(parameters);
                             Set<String> missingThrows = new HashSet<>(throwsList);
                             boolean hasReturn = false;

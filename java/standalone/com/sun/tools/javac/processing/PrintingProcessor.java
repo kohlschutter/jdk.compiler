@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 import standalone.com.sun.tools.javac.util.DefinedBy;
 import standalone.com.sun.tools.javac.util.DefinedBy.Api;
 import standalone.com.sun.tools.javac.util.StringUtils;
+import standalone.java.util.stream.StreamShim;
 import standalone.javax.annotation.processing.AbstractProcessorShim;
 import standalone.javax.annotation.processing.SupportedSourceVersionStandalone;
 import standalone.javax.lang.model.TypeElementShim;
@@ -297,10 +298,10 @@ public class PrintingProcessor extends AbstractProcessorShim {
                 for(Element element :
                         (kind != RECORD ?
                          e.getEnclosedElements() :
-                         e.getEnclosedElements()
+                         StreamShim.toList( e.getEnclosedElements()
                          .stream()
                          .filter(elt -> elementUtils.getOrigin(elt) == Elements.Origin.EXPLICIT )
-                         .toList() ) )
+                         ) ) )
                     this.visit(element);
             }
 

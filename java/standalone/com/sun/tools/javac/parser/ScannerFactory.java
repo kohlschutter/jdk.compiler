@@ -75,7 +75,8 @@ public class ScannerFactory {
     }
 
     public Scanner newScanner(CharSequence input, boolean keepDocComments) {
-        if (input instanceof CharBuffer charBuffer) {
+        if (input instanceof CharBuffer) {
+          CharBuffer charBuffer = (CharBuffer)input;
             if (keepDocComments)
                 return new Scanner(this, new JavadocTokenizer(this, charBuffer));
             else

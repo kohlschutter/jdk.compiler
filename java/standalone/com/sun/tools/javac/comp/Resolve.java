@@ -1594,7 +1594,8 @@ public class Resolve {
                 case ABSENT_MTH:
                     return new InapplicableSymbolError(currentResolutionContext);
                 case HIDDEN:
-                    if (bestSoFar instanceof AccessError accessError) {
+                    if (bestSoFar instanceof AccessError) {
+                      AccessError accessError = (AccessError)bestSoFar;
                         // Add the JCDiagnostic of previous AccessError to the currentResolutionContext
                         // and construct InapplicableSymbolsError.
                         // Intentionally fallthrough.
@@ -1626,7 +1627,8 @@ public class Resolve {
             } else if (bestSoFar.kind == WRONG_MTHS) {
                 // Add the JCDiagnostic of current AccessError to the currentResolutionContext
                 currentResolutionContext.addInapplicableCandidate(sym, curDiagnostic);
-            } else if (bestSoFar.kind == HIDDEN && bestSoFar instanceof AccessError accessError) {
+            } else if (bestSoFar.kind == HIDDEN && bestSoFar instanceof AccessError) {
+              AccessError accessError = (AccessError)bestSoFar;
                 // Add the JCDiagnostics of previous and current AccessError to the currentResolutionContext
                 // and construct InapplicableSymbolsError.
                 currentResolutionContext.addInapplicableCandidate(accessError.sym,
@@ -2497,7 +2499,7 @@ public class Resolve {
          *  but the completion failure may have been silently swallowed (e.g. missing annotation types)
          *  with an error stub symbol lingering in the symbol tables.
          */
-        return symbol instanceof ClassSymbol c && c.type.isErroneous() && c.classfile == null ? typeNotFound : symbol;
+        return symbol instanceof ClassSymbol && ((ClassSymbol)symbol).type.isErroneous() && ((ClassSymbol)symbol).classfile == null ? typeNotFound : symbol;
     }
 
     Symbol findIdentInTypeInternal(Env<AttrContext> env, Type site,
@@ -4878,10 +4880,10 @@ public class Resolve {
             }
 
             BiPredicate<Object, List<Type>> containsPredicate = (o, ts) -> {
-                if (o instanceof Type type) {
-                    return type.containsAny(ts);
-                } else if (o instanceof JCDiagnostic diagnostic) {
-                    return containsAny(diagnostic, ts);
+                if (o instanceof Type) {
+                    return ((Type)o).containsAny(ts);
+                } else if (o instanceof JCDiagnostic) {
+                    return containsAny(((JCDiagnostic)o), ts);
                 } else {
                     return false;
                 }

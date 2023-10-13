@@ -149,8 +149,8 @@ public abstract class DCTree implements DocTree {
      * it to a position in the source file.
      */
     public int getEndPosition() {
-        if (this instanceof DCEndPosTree<?> dcEndPosTree) {
-            int endPos = dcEndPosTree.getEndPos();
+        if (this instanceof DCEndPosTree<?>) {
+            int endPos = ((DCEndPosTree<?>)this).getEndPos();
 
             if (endPos != NOPOS) {
                 return endPos;
@@ -183,7 +183,7 @@ public abstract class DCTree implements DocTree {
                 DCTree last = getLastChild();
 
                 if (last != null) {
-                    int correction = (this instanceof DCParam p && p.isTypeParameter && p.getDescription().isEmpty()) ? 1 : 0;
+                    int correction = (this instanceof DCParam && ((DCParam)this).isTypeParameter && ((DCParam)this).getDescription().isEmpty()) ? 1 : 0;
                     return last.getEndPosition() + correction;
                 }
 
@@ -263,7 +263,7 @@ public abstract class DCTree implements DocTree {
         accept(new DocTreeScanner<Void, Void>() {
             @Override @DefinedBy(Api.COMPILER_TREE)
             public Void scan(DocTree node, Void p) {
-                if (node instanceof DCTree dcTree) last[0] = dcTree;
+                if (node instanceof DCTree) last[0] = ((DCTree)node);
                 return null;
             }
         }, null);

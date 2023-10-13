@@ -263,8 +263,11 @@ public abstract class Directive implements ModuleElement.Directive {
         // TODO: delete?
         @Override
         public boolean equals(Object obj) {
-            return (obj instanceof ProvidesDirective directive)
-                    && service == directive.service
+          if (!(obj instanceof ProvidesDirective)) {
+            return false;
+          }
+          ProvidesDirective directive = (ProvidesDirective)obj;
+            return service == directive.service
                     && impls.equals(directive.impls);
         }
 
@@ -357,8 +360,8 @@ public abstract class Directive implements ModuleElement.Directive {
         // TODO: delete?
         @Override
         public boolean equals(Object obj) {
-            return (obj instanceof UsesDirective directive)
-                    && service == directive.service;
+            return (obj instanceof UsesDirective)
+                    && service == ((UsesDirective)obj).service;
         }
 
         // TODO: delete?

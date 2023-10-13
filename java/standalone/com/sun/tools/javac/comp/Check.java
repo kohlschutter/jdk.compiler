@@ -342,12 +342,12 @@ public class Check {
     Type typeTagError(DiagnosticPosition pos, JCDiagnostic required, Object found) {
         // this error used to be raised by the parser,
         // but has been delayed to this point:
-        if (found instanceof Type type && type.hasTag(VOID)) {
+        if (found instanceof Type && ((Type)found).hasTag(VOID)) {
             log.error(pos, Errors.IllegalStartOfType);
             return syms.errType;
         }
         log.error(pos, Errors.TypeFoundReq(found, required));
-        return types.createErrorType(found instanceof Type type ? type : syms.errType);
+        return types.createErrorType(found instanceof Type ? (Type)found : syms.errType);
     }
 
     /** Report an error that symbol cannot be referenced before super
@@ -1381,7 +1381,7 @@ public class Check {
             @Override
             public void visitVarDef(JCVariableDecl tree) {
                 if ((tree.mods.flags & ENUM) != 0) {
-                    if (tree.init instanceof JCNewClass newClass && newClass.def != null) {
+                    if (tree.init instanceof JCNewClass && ((JCNewClass)tree.init).def != null) {
                         specialized = true;
                     }
                 }
@@ -2888,7 +2888,7 @@ public class Check {
      *  @param list mutable list of items
      *  @param comparer returns flag bit(s) to remove FIRST and/or SECOND
      */
-    <T> void compareAndRemove(java.util.List<T> list, ToIntBiFunction<? super T, ? super T> comparer) {
+    <T> void compareAndRemove(java.util.List<T> list, standalone.java.util.function.ToIntBiFunction<? super T, ? super T> comparer) {
         for (int index1 = 0; index1 < list.size() - 1; index1++) {
             T item1 = list.get(index1);
             for (int index2 = index1 + 1; index2 < list.size(); index2++) {
@@ -3445,10 +3445,10 @@ public class Check {
         } else {
             containerTargets = new HashSet<>();
             for (Attribute app : containerTarget.values) {
-                if (!(app instanceof Attribute.Enum attributeEnum)) {
+                if (!(app instanceof Attribute.Enum)) {
                     continue; // recovery
                 }
-                containerTargets.add(attributeEnum.value.name);
+                containerTargets.add(((Attribute.Enum)app).value.name);
             }
         }
 
@@ -3459,10 +3459,10 @@ public class Check {
         } else {
             containedTargets = new HashSet<>();
             for (Attribute app : containedTarget.values) {
-                if (!(app instanceof Attribute.Enum attributeEnum)) {
+                if (!(app instanceof Attribute.Enum)) {
                     continue; // recovery
                 }
-                containedTargets.add(attributeEnum.value.name);
+                containedTargets.add(((Attribute.Enum)app).value.name);
             }
         }
 
@@ -3573,10 +3573,10 @@ public class Check {
             targets = new Name[arr.values.length];
             for (int i=0; i<arr.values.length; ++i) {
                 Attribute app = arr.values[i];
-                if (!(app instanceof Attribute.Enum attributeEnum)) {
+                if (!(app instanceof Attribute.Enum)) {
                     return new Name[0];
                 }
-                targets[i] = attributeEnum.value.name;
+                targets[i] = ((Attribute.Enum)app).value.name;
             }
         }
         return targets;
@@ -3603,11 +3603,11 @@ public class Check {
             targets = new Name[arr.values.length];
             for (int i=0; i<arr.values.length; ++i) {
                 Attribute app = arr.values[i];
-                if (!(app instanceof Attribute.Enum attributeEnum)) {
+                if (!(app instanceof Attribute.Enum)) {
                     // recovery
                     return Optional.empty();
                 }
-                targets[i] = attributeEnum.value.name;
+                targets[i] = ((Attribute.Enum)app).value.name;
             }
         }
         for (Name target : targets) {
@@ -3672,7 +3672,7 @@ public class Check {
         Attribute.Compound atTarget = s.getAnnotationTypeMetadata().getTarget();
         if (atTarget == null) return null; // ok, is applicable
         Attribute atValue = atTarget.member(names.value);
-        return (atValue instanceof Attribute.Array attributeArray) ? attributeArray : null;
+        return (atValue instanceof Attribute.Array) ? ((Attribute.Array)atValue) : null;
     }
 
     private Name[] dfltTargetMeta;
@@ -4583,10 +4583,11 @@ public class Check {
     void checkSwitchCaseStructure(List<JCCase> cases) {
         for (List<JCCase> l = cases; l.nonEmpty(); l = l.tail) {
             JCCase c = l.head;
-            if (c.labels.head instanceof JCConstantCaseLabel constLabel) {
+            if (c.labels.head instanceof JCConstantCaseLabel) {
+              JCConstantCaseLabel constLabel = (JCConstantCaseLabel)c.labels.head;
                 if (TreeInfo.isNull(constLabel.expr)) {
                     if (c.labels.tail.nonEmpty()) {
-                        if (c.labels.tail.head instanceof JCDefaultCaseLabel defLabel) {
+                        if (c.labels.tail.head instanceof JCDefaultCaseLabel) {
                             if (c.labels.tail.tail.nonEmpty()) {
                                 log.error(c.labels.tail.tail.head.pos(), Errors.InvalidCaseLabelCombination);
                             }
@@ -4621,12 +4622,12 @@ public class Check {
                 JCCase c = l.head;
                 if (previousCompletessNormally &&
                     c.stats.nonEmpty() &&
-                    c.labels.head instanceof JCPatternCaseLabel patternLabel &&
-                    hasBindings(patternLabel.pat)) {
+                    c.labels.head instanceof JCPatternCaseLabel &&
+                    hasBindings(((JCPatternCaseLabel)c.labels.head).pat)) {
                     log.error(c.labels.head.pos(), Errors.FlowsThroughToPattern);
                 } else if (c.stats.isEmpty() &&
-                           c.labels.head instanceof JCPatternCaseLabel patternLabel &&
-                           hasBindings(patternLabel.pat) &&
+                           c.labels.head instanceof JCPatternCaseLabel &&
+                           hasBindings(((JCPatternCaseLabel)c.labels.head).pat) &&
                            hasStatements(l.tail)) {
                     log.error(c.labels.head.pos(), Errors.FlowsThroughFromPattern);
                 }
@@ -4697,11 +4698,11 @@ public class Check {
                         if (label instanceof JCConstantCaseLabel) {
                             dominated |= !(testCaseLabel instanceof JCConstantCaseLabel) &&
                                          TreeInfo.unguardedCase(testCase);
-                        } else if (label instanceof JCPatternCaseLabel patternCL &&
-                                   testCaseLabel instanceof JCPatternCaseLabel testPatternCaseLabel &&
+                        } else if (label instanceof JCPatternCaseLabel &&
+                                   testCaseLabel instanceof JCPatternCaseLabel &&
                                    TreeInfo.unguardedCase(testCase)) {
-                            dominated = patternDominated(testPatternCaseLabel.pat,
-                                                         patternCL.pat);
+                            dominated = patternDominated(((JCPatternCaseLabel)testCaseLabel).pat,
+                                                         ((JCPatternCaseLabel)label).pat);
                         }
                         if (dominated) {
                             log.error(label.pos(), Errors.PatternDominated);
@@ -4737,12 +4738,13 @@ public class Check {
                 currentPattern instanceof JCAnyPattern) {
                 return existingPattern instanceof JCBindingPattern ||
                        existingPattern instanceof JCAnyPattern;
-            } else if (currentPattern instanceof JCRecordPattern currentRecordPattern) {
+            } else if (currentPattern instanceof JCRecordPattern) {
+              JCRecordPattern currentRecordPattern = (JCRecordPattern)currentPattern;
                 if (existingPattern instanceof JCBindingPattern ||
                     existingPattern instanceof JCAnyPattern) {
                     return true;
-                } else if (existingPattern instanceof JCRecordPattern existingRecordPattern) {
-                    List<JCPattern> existingNested = existingRecordPattern.nested;
+                } else if (existingPattern instanceof JCRecordPattern) {
+                    List<JCPattern> existingNested = ((JCRecordPattern)existingPattern).nested;
                     List<JCPattern> currentNested = currentRecordPattern.nested;
                     if (existingNested.size() != currentNested.size()) {
                         return false;
@@ -4781,6 +4783,15 @@ public class Check {
     public void checkSerialStructure(JCClassDecl tree, ClassSymbol c) {
         (new SerialTypeVisitor()).visit(c, tree);
     }
+    
+    private static final Set<String> serialMethodNames =
+        Set.of("writeObject", "writeReplace",
+               "readObject",  "readObjectNoData",
+               "readResolve");
+
+    private static final Set<String> serialFieldNames =
+        Set.of("serialVersionUID", "serialPersistentFields");
+
 
     /**
      * This visitor will warn if a serialization-related field or
@@ -4813,14 +4824,6 @@ public class Check {
         SerialTypeVisitor() {
             this.lint = Check.this.lint;
         }
-
-        private static final Set<String> serialMethodNames =
-            Set.of("writeObject", "writeReplace",
-                   "readObject",  "readObjectNoData",
-                   "readResolve");
-
-        private static final Set<String> serialFieldNames =
-            Set.of("serialVersionUID", "serialPersistentFields");
 
         // Type of serialPersistentFields
         private final Type OSF_TYPE = new Type.ArrayType(syms.objectStreamFieldType, syms.arrayClass);
